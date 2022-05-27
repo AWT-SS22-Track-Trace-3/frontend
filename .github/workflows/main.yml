@@ -23,7 +23,7 @@ jobs:
         PULL_REQUEST_BASE_BRANCH_NAME : ${{ github.event.pull_request.base.ref }}
         IS_SEND_HERE_MENTION : false
         MAKE_PRETTY : false
-        MAKE_COMPACT : false
+        MAKE_COMPACT : true
         IS_PR_FROM_FORK: false
         SEND_USER_ID_MENTIONS : U03DMTNU1RA,U03E16AMXH7
       uses: jun3453/slack-pr-open-notification-action@v1.3.0
