@@ -1,16 +1,13 @@
-import React from "react";
+import { React, useCallback } from "react";
+import { Query, Builder, BasicConfig, BuilderProps, Utils as QbUtils } from 'react-awesome-query-builder';
 import BootstrapConfig from "react-awesome-query-builder/lib/config/bootstrap";
 import 'react-awesome-query-builder/lib/css/styles.css';
-import { Query, Builder, BasicConfig, Utils as QbUtils } from 'react-awesome-query-builder';
 
 const ReactQueryBuilder = () => {
-    const InitialConfig = BootstrapConfig;
+    const InitialConfig = BasicConfig;
     const queryValue = { "id": QbUtils.uuid(), "type": "group" };
 
-    var state = {
-        tree: QbUtils.checkTree(QbUtils.loadTree(queryValue), config),
-        config: config
-    };
+    console.log(queryValue);
 
     const config = {
         ...InitialConfig,
@@ -37,24 +34,40 @@ const ReactQueryBuilder = () => {
         }
     }
 
-    var renderBuilder = (props) => {
-        return (
-            <div className="query-builder-container" style={{ padding: '10px' }}>
-                <div className="query-builder">
-                    <Builder {...props} />
-                </div>
-            </div>
-        )
+    /*
+
+    var state = {
+        tree: QbUtils.checkTree(QbUtils.loadTree(queryValue), config),
+        config: config
     };
+
+    console.log(state);
+
+    const renderBuilder = (props) => (
+        <div className="query-builder-container" style={{ padding: '10px' }}>
+            <div className="query-builder">
+                <Builder {...props} />
+            </div>
+        </div>
+    );
+
+    */
+
+    const renderBuilder = useCallback((props: BuilderProps) => (
+        <div className="query-builder-container" style={{ padding: "10px" }}>
+            <div className="query-builder">
+                <Builder {...props} />
+            </div>
+        </div>
+    ), []);
 
     return (
         <div>
             <Query
                 {...config}
-                value={this.state.tree}
-                onChange={console.log("changes")}
                 renderBuilder={renderBuilder}
-            ></Query>
+                onChange={console.log("changes")}
+            />
         </div>
     );
 }
