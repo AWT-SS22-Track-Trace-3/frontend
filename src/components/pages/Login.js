@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { Button } from 'react-bootstrap';
 import { Col, Container, Row } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+    let navigate = useNavigate();
 
     const [loginData, setLoginData] = useState({
         loginId: "",
@@ -20,6 +22,7 @@ const Login = () => {
 
     const signIn = () => {
         console.log(loginData.loginId);
+        navigate("/search");
     }
 
     const containerStyle = {
