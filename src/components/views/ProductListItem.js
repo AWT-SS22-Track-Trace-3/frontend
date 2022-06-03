@@ -1,12 +1,17 @@
 import React from "react";
-import { Accordion, Badge, Card, Button } from "react-bootstrap";
+import { Accordion, Badge, Card, Button, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import us from "../../img/united-states.png";
+import eu from "../../img/european-union.png";
 
 const ProductListItem = (props) => {
     return (
         <Card className="text-start">
             <Card.Body>
-                <Card.Title>{props.item.name}</Card.Title>
+                <Card.Title>
+                    <Image src={eu} height="25px" className="me-2"></Image>
+                    {props.item.name}
+                </Card.Title>
                 <Accordion>
                     <Accordion.Item>
                         <Accordion.Header>
@@ -20,6 +25,8 @@ const ProductListItem = (props) => {
                             </span>
                         </Accordion.Header>
                         <Accordion.Body className="text-start">
+                        <p>Product Code: <span style={{ fontWeight: 500 }}>{props.item.productCode}</span></p>
+                        <p>Serial Number: <span style={{ fontWeight: 500 }}>{props.item.serialNumber}</span></p>
                             <p>Manufacturer: <span style={{ fontWeight: 500 }}>{props.item.manufacturer}</span></p>
                             <p>Seller: <span style={{ fontWeight: 500 }}>{props.item.seller}</span></p>
                             <p>Expiry: <span style={{ fontWeight: 500 }}>{props.item.expiry}</span></p>
