@@ -1,9 +1,6 @@
 import { React, useState } from 'react';
 import { formatQuery, QueryBuilder } from 'react-querybuilder';
-import {
-    bootstrapControlClassnames,
-    bootstrapControlElements,
-} from '@react-querybuilder/bootstrap';
+import { bootstrapControlClassnames, bootstrapControlElements } from '@react-querybuilder/bootstrap';
 import CustomValueEditor from '../util/CustomValueEditor';
 import 'bootstrap/scss/bootstrap.scss';
 import 'react-querybuilder/dist/query-builder.scss';
