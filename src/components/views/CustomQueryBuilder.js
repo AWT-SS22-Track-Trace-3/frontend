@@ -65,7 +65,7 @@ const CustomQueryBuilder = () => {
                 controlElements={{ ...bootstrapControlElements, valueEditor: CustomValueEditor }}
                 controlClassnames={bootstrapControlClassnames}
             ></QueryBuilder>
-            <p>{formatQuery(query, "mongodb")}</p>
+            {/*<p>{formatQuery(query, "mongodb")}</p>*/}
         </div>
     );
 }
