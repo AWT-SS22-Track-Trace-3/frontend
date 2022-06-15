@@ -16,7 +16,7 @@ const Search = () => {
             <Row className="mt-4">
                 <Col>
                     <h2>Results</h2>
-                    <ProductList products={data}></ProductList>
+                    <ProductList products={data.filter(x => x.name.includes("Metformin"))}></ProductList>
                 </Col>
             </Row>
         </Container>

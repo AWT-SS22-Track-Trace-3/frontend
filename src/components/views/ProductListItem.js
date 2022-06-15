@@ -22,13 +22,13 @@ const ProductListItem = (props) => {
     }
 
     return (
-        <Card className="text-start mb-2">
+        <Card className="text-start mb-2 product">
             <Card.Body>
                 <Card.Title>
                     <Image src={getLocaleImg(props.item)} height="25px" className="me-2" style={{ verticalAlign: "sub" }}></Image>
                     {props.item.name}
                     <div style={{ float: "right" }}>
-                        <Link to="/">
+                        <Link to={"/history/" + props.item.serial_number}>
                             <Button size="sm" variant="link">Transaction History</Button>
                         </Link>
                         <Link to="/">
@@ -52,12 +52,20 @@ const ProductListItem = (props) => {
                                 {props.item.serial_number}
                             </span>
                         </Accordion.Header>
-                        <Accordion.Body className="text-start">
-                            <p>Product Code: <span style={{ fontWeight: 500 }}>{props.item.productCode}</span></p>
-                            <p>Serial Number: <span style={{ fontWeight: 500 }}>{props.item.serialNumber}</span></p>
-                            <p>Manufacturer: <span style={{ fontWeight: 500 }}>{props.item.manufacturer}</span></p>
-                            <p>Seller: <span style={{ fontWeight: 500 }}>{props.item.seller}</span></p>
-                            <p>Expiry: <span style={{ fontWeight: 500 }}>{props.item.expiry}</span></p>
+                        <Accordion.Body className="text-start d-flex">
+                            <div>
+                                <p>{getLocale(props.item) === "eu" ? "Drug Code" : "National Drug Code"}: <span style={{ fontWeight: 500 }}>{props.item.drug_code}</span></p>
+                                <p>{getLocale(props.item) === "eu" ? "Serial Number" : "Standard Numeric Identifier"}: <span style={{ fontWeight: 500 }}>{props.item.serial_number}</span></p>
+                                <p>Batch Number: <span style={{ fontWeight: 500 }}>{props.item.batch_number}</span></p>
+                                <p>Manufacturer: <span style={{ fontWeight: 500 }}>{props.item.manufacturer_name}</span></p>
+                                <p>Marketer: <span style={{ fontWeight: 500 }}>{props.item.marketing_holder_name}</span></p>
+                            </div>
+                            <div className="ms-5">
+                                <p>Form: <span style={{ fontWeight: 500 }}>{props.item.form}</span></p>
+                                <p>Strength: <span style={{ fontWeight: 500 }}>{props.item.strength}</span></p>
+                                <p>Pack Size: <span style={{ fontWeight: 500 }}>{props.item.pack_size}</span></p>
+                                <p>Expiration Date: <span style={{ fontWeight: 500 }}>{props.item.expiry_date}</span></p>
+                            </div>
                         </Accordion.Body>
                     </Accordion.Item>
                 </Accordion >

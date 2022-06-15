@@ -1,29 +1,16 @@
 import React, { useState } from "react";
 import { Button } from 'react-bootstrap';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Container, Row, Alert } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
+import LoginForm from "../views/LoginForm";
+import RegisterForm from "../views/RegisterForm";
 
 const Login = () => {
-    let navigate = useNavigate();
 
-    const [loginData, setLoginData] = useState({
-        loginId: "",
-        password: ""
+    const [userId, setUserId] = useState({
+        userId: ""
     })
-
-    const loginDataChange = (event) => {
-        const target = event.target;
-        const name = target.name;
-        let value = target.value;
-
-        setLoginData({ ...loginData, [name]: value });
-    }
-
-    const signIn = () => {
-        console.log(loginData.loginId);
-        navigate("/search");
-    }
 
     const containerStyle = {
         height: "100%",
@@ -32,25 +19,29 @@ const Login = () => {
         justifyContent: "center"
     }
 
+    const dividerStyle = {
+        height: "100%",
+        width: "1px",
+        backgroundColor: "#e9ecef"
+    }
+
     return (
         <Container fluid="lg" style={containerStyle}>
             <Row>
-                <Col md={{ span: 4, offset: 4 }} className="d-flex flex-column">
-                    <h1 className="mb-4">Login</h1>
-                    <Form className="text-end">
-                        <Form.Group className="mb-3" controlId="formLoginId">
-                            <Form.Control name="loginId" type="text" placeholder="Enter ID" onChange={loginDataChange} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formLoginId">
-                            <Form.Control disabled name="password" type="password" placeholder="Enter Password" onChange={loginDataChange} />
-                        </Form.Group>
-                    </Form>
-                    <Button variant="primary" type="submit" onClick={signIn}>
-                        Login
-                    </Button>
+                <Col md={{ span: 4, offset: 2 }} className="d-flex flex-column">
+                    <LoginForm title="Login"></LoginForm>
+                </Col>
+                <div style={dividerStyle} className="px-0 mx-4"></div>
+                <Col md={{ span: 4, offset: 0 }} className="d-flex flex-column">
+                    <RegisterForm title="Register"></RegisterForm>
                 </Col>
             </Row>
-        </Container>
+            <Row>
+                <Col>
+                    <Alert key="id-alert" variant="success" show={!userId}>Logged in with user ID: {userId}</Alert>
+                </Col>
+            </Row>
+        </Container >
     );
 }
 
