@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 import LoginForm from "../views/LoginForm";
 import RegisterForm from "../views/RegisterForm";
 
+
 const Login = () => {
+    let navigate = useNavigate();
 
     const [userId, setUserId] = useState({
         userId: ""

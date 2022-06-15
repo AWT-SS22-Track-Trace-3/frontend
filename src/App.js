@@ -4,6 +4,7 @@ import Search from './components/pages/Search';
 import TransactionHistory from './components/pages/TransactionHistory';
 import Footer from './components/views/Footer';
 
+
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
