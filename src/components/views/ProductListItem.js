@@ -28,7 +28,7 @@ const ProductListItem = (props) => {
                     <Image src={getLocaleImg(props.item)} height="25px" className="me-2" style={{ verticalAlign: "sub" }}></Image>
                     {props.item.name}
                     <div style={{ float: "right" }}>
-                        <Link to={"/history/" + props.item.serial_number}>
+                        <Link to={"/history/" + props.item.serial_number} className={(props.hideLink ? "d-none" : "")}>
                             <Button size="sm" variant="link">Transaction History</Button>
                         </Link>
                         <Link to="/">
@@ -52,7 +52,7 @@ const ProductListItem = (props) => {
                                 {props.item.serial_number}
                             </span>
                         </Accordion.Header>
-                        <Accordion.Body className="text-start d-flex">
+                        <Accordion.Body className={"text-start " + (props.vertical ? "" : "d-flex")}>
                             <div>
                                 <p>{getLocale(props.item) === "eu" ? "Drug Code" : "National Drug Code"}: <span style={{ fontWeight: 500 }}>{props.item.drug_code}</span></p>
                                 <p>{getLocale(props.item) === "eu" ? "Serial Number" : "Standard Numeric Identifier"}: <span style={{ fontWeight: 500 }}>{props.item.serial_number}</span></p>
@@ -60,7 +60,7 @@ const ProductListItem = (props) => {
                                 <p>Manufacturer: <span style={{ fontWeight: 500 }}>{props.item.manufacturer_name}</span></p>
                                 <p>Marketer: <span style={{ fontWeight: 500 }}>{props.item.marketing_holder_name}</span></p>
                             </div>
-                            <div className="ms-5">
+                            <div className={(props.vertical ? "" : "ms-5")}>
                                 <p>Form: <span style={{ fontWeight: 500 }}>{props.item.form}</span></p>
                                 <p>Strength: <span style={{ fontWeight: 500 }}>{props.item.strength}</span></p>
                                 <p>Pack Size: <span style={{ fontWeight: 500 }}>{props.item.pack_size}</span></p>

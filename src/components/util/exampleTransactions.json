@@ -1,0 +1,42 @@
+[
+    {
+        "type": "manufacturer",
+        "name": "Test Manufacturer",
+        "address_street": "Test Street",
+        "address_number": "42",
+        "address_zip": "12345",
+        "address_city": "New York, NY",
+        "checkin_date": "",
+        "checkout_date": "05-07-2020"
+    },
+    {
+        "type": "repackager",
+        "name": "Test Repackager",
+        "address_street": "Test Street",
+        "address_number": "42",
+        "address_zip": "12345",
+        "address_city": "New York, NY",
+        "checkin_date": "06-07-2020",
+        "checkout_date": "14-07-2020"
+    },
+    {
+        "type": "wholesaler",
+        "name": "Test Wholesaler",
+        "address_street": "Test Street",
+        "address_number": "42",
+        "address_zip": "12345",
+        "address_city": "New York, NY",
+        "checkin_date": "08-07-2020",
+        "checkout_date": "30-07-2020"
+    },
+    {
+        "type": "dispenser",
+        "name": "Test Dispenser",
+        "address_street": "Test Street",
+        "address_number": "42",
+        "address_zip": "12345",
+        "address_city": "New York, NY",
+        "checkin_date": "31-07-2020",
+        "checkout_date": "14-08-2020"
+    }
+]
