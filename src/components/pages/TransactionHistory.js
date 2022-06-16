@@ -14,7 +14,6 @@ const TransactionHistory = (props) => {
     const { id } = useParams();
 
     const containerStyle = {
-        height: "100%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center"
@@ -24,7 +23,10 @@ const TransactionHistory = (props) => {
         <Container fluid style={containerStyle} className="px-5">
             <h1>Supply Chain Overview</h1>
             <Row>
-                <Col sm={{ span: 12 }} md={{ span: 8 }} className="d-flex flex-column">
+                <Col>
+                    <ProductListItem item={data[0]} hideLink noMargin></ProductListItem>
+                </Col>
+                <Col sm={{ span: 12 }} className="d-flex flex-column">
                     <VerticalTimeline animate={false} layout={"1-column-left"} lineColor={"black"}>
                         {transactions.map((item, index) =>
                             <VerticalTimelineElement
@@ -44,9 +46,6 @@ const TransactionHistory = (props) => {
                             </VerticalTimelineElement>
                         )}
                     </VerticalTimeline>
-                </Col>
-                <Col>
-                    <ProductListItem item={data[0]} hideLink vertical></ProductListItem>
                 </Col>
             </Row>
         </Container >

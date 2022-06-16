@@ -22,7 +22,7 @@ const ProductListItem = (props) => {
     }
 
     return (
-        <Card className="text-start mb-2 product">
+        <Card className={"text-start product " + (props.noMargin ? "" : "mb-2")}>
             <Card.Body>
                 <Card.Title>
                     <Image src={getLocaleImg(props.item)} height="25px" className="me-2" style={{ verticalAlign: "sub" }}></Image>

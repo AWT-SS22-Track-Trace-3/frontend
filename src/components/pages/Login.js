@@ -30,10 +30,12 @@ const Login = () => {
     return (
         <Container fluid="lg" style={containerStyle}>
             <Row>
-                <Col md={{ span: 4, offset: 2 }} className="d-flex flex-column">
+                <Col md={{ span: 4, offset: 1 }} className="d-flex flex-column">
                     <LoginForm title="Login"></LoginForm>
                 </Col>
-                <div style={dividerStyle} className="px-0 mx-4"></div>
+                <Col md="1" className="d-flex justify-content-center">
+                    <div style={dividerStyle} className="px-0 mx-4"></div>
+                </Col>
                 <Col md={{ span: 4, offset: 0 }} className="d-flex flex-column">
                     <RegisterForm title="Register"></RegisterForm>
                 </Col>
