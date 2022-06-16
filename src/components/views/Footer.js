@@ -4,9 +4,7 @@ import { Alert } from "react-bootstrap"
 const Footer = () => {
     const footerStyle = {
         height: "60px",
-        position: "absolute",
-        bottom: "0px",
-        right: "0px"
+        position: "relative"
     }
 
     const [session, setSession] = useState({
@@ -19,7 +17,9 @@ const Footer = () => {
     }
 
     return (
-        <Alert variant={session.status ? "success" : "danger"} className="m-4" style={footerStyle}>Currently not logged in!</Alert>
+        <div className="p-4">
+            <Alert variant={session.status ? "success" : "danger"} className="m-0" style={footerStyle}>Currently not logged in!</Alert>
+        </div>
     );
 }
 
