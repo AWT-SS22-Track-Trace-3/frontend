@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import { Button } from 'react-bootstrap';
+import axios from "axios";
+import qs from 'qs';
 
 const LoginForm = (props) => {
     let navigate = useNavigate();
 
     const [loginData, setLoginData] = useState({
-        loginId: ""
+        loginId: "",
+        password: ""
     })
 
     const loginDataChange = (event) => {
@@ -20,7 +23,14 @@ const LoginForm = (props) => {
 
     const signIn = () => {
         console.log(loginData.loginId);
-        navigate("/search");
+
+        axios.post("http://localhost:8000/token", qs.stringify({
+            username: loginData.loginId,
+            password: loginData.password
+        })).then((res) => {
+            console.log(res);
+            navigate("/search");
+        }).then((err) => console.log(err));
     }
 
     return (
@@ -29,6 +39,9 @@ const LoginForm = (props) => {
             <Form className="text-end">
                 <Form.Group className="mb-3" controlId="formLoginId">
                     <Form.Control name="loginId" type="text" placeholder="Enter ID" onChange={loginDataChange} />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formLoginId">
+                    <Form.Control name="password" type="password" placeholder="Password" onChange={loginDataChange} />
                 </Form.Group>
             </Form>
             <Button variant="primary" type="submit" onClick={signIn} style={{ float: "right" }}>
