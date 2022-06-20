@@ -27,7 +27,7 @@ const LoginForm = (props) => {
         axios.post("http://localhost:8000/token", qs.stringify({
             username: loginData.loginId,
             password: loginData.password
-        })).then((res) => {
+        }), {withCredentials: true}).then((res) => {
             console.log(res);
             navigate("/search");
         }).then((err) => console.log(err));

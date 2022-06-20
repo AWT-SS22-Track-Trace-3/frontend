@@ -1,11 +1,11 @@
-import React from "react"; import { useResolvedPath } from "react-router-dom";
+import React from "react";
 import ProductListItem from "./ProductListItem";
 
 const ProductList = (props) => {
     return (
         <div>
             {props.products.map((item, index) =>
-                <ProductListItem item={item}></ProductListItem>
+                <ProductListItem item={item} key={index}></ProductListItem>
             )}
         </div>
     );
