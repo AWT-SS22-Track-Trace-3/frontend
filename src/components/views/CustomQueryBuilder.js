@@ -1,11 +1,12 @@
 import { React, useState } from 'react';
 import { formatQuery, QueryBuilder } from 'react-querybuilder';
 import { bootstrapControlClassnames, bootstrapControlElements } from '@react-querybuilder/bootstrap';
+import { Button } from 'react-bootstrap';
 import CustomValueEditor from '../util/CustomValueEditor';
 import 'bootstrap/scss/bootstrap.scss';
 import 'react-querybuilder/dist/query-builder.scss';
 
-const CustomQueryBuilder = () => {
+const CustomQueryBuilder = (props) => {
     const fields: Field[] = [
         {
             name: 'name',
@@ -65,6 +66,7 @@ const CustomQueryBuilder = () => {
                 controlElements={{ ...bootstrapControlElements, valueEditor: CustomValueEditor }}
                 controlClassnames={bootstrapControlClassnames}
             ></QueryBuilder>
+            <Button onClick={() => props.searchHandler(query)}>Search</Button>
             {/*<p>{formatQuery(query, "mongodb")}</p>*/}
         </div>
     );
