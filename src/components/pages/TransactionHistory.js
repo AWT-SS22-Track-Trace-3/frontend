@@ -20,7 +20,7 @@ const TransactionHistory = (props) => {
     }
 
     return (
-        <Container fluid style={containerStyle} className="px-5">
+        <Container fluid="lg" style={containerStyle}>
             <h1>Supply Chain Overview</h1>
             <Row>
                 <Col>

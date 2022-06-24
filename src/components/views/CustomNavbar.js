@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import { Container, Navbar, Button } from "react-bootstrap";
 import { useCookies } from "react-cookie";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CustomNavbar = (props) => {
     const [cookies, setCookie, removeCookie] = useCookies();
+    const navigate = useNavigate();
 
     const logout = () => {
 
         removeCookie("access_token");
         removeCookie("access_level");
+
+        navigate("/");
     }
 
     const register = () => {

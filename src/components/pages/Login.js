@@ -12,9 +12,6 @@ const Login = (props) => {
     let navigate = useNavigate();
 
     const [cookies] = useCookies(["access_token"]);
-    const [sessionStatus, setSessionStatus] = useState({
-        active: false
-    });
 
     useEffect(() => {
         console.log(!cookies.access_token)

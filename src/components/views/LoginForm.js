@@ -29,7 +29,7 @@ const LoginForm = (props) => {
             username: loginData.loginId,
             password: loginData.password
         })).then((res) => {
-            setCookie("access_level", res.data.user.access_lvl, { path: '/' });
+            setCookie("access_level", res.data.access_lvl, { path: '/' });
             setCookie("access_token", res.data.access_token, { path: '/' });
             navigate("/search");
         }).then((err) => console.log(err));

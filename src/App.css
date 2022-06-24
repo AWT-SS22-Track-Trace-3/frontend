@@ -43,3 +43,9 @@
 .product p {
     margin-bottom: 4px;
 }
+
+.divider-horizontal {
+    width: 100%;
+    background-color: #d1d1d1;
+    height: 1px;
+}
