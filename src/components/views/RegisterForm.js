@@ -6,6 +6,8 @@ import axios from "axios";
 import API from "../util/API";
 import qs from "qs";
 import { useCookies } from "react-cookie";
+import { computeHeadingLevel } from "@testing-library/react";
+import { getNames, getName, getCode } from "country-list";
 
 const RegisterForm = (props) => {
     let navigate = useNavigate();
@@ -16,10 +18,8 @@ const RegisterForm = (props) => {
         username: "",
         password: "",
         password_confirmed: false,
-        address_street: "",
-        address_number: "",
-        address_zip: "",
-        address_city: "",
+        address: "",
+        country: "DE",
         access_lvl: 0
     })
 
@@ -28,12 +28,17 @@ const RegisterForm = (props) => {
         const name = target.name;
         let value = target.value;
 
-        if (name == "password-confirm") {
+        if (name === "password-confirm") {
             setUserData({ ...userData, password_confirmed: checkPassword(value) });
+        } else if (name === "company") {
+            setUserData({ ...userData, company: value, username: generateUsername(value) });
         } else {
             setUserData({ ...userData, [name]: value });
         }
     }
+
+    const generateUsername = (company = "") => company.toLowerCase().replaceAll(" ", "_");
+    const generateAddress = (street, number, zip, city) => street + " "
 
     const checkPassword = (password) => {
         return password == userData.password;
@@ -41,10 +46,10 @@ const RegisterForm = (props) => {
 
     const signUp = () => {
         for (let key in userData) {
-            if (userData[key] === "") {
-                return;
-            }
+            if (userData[key] === "") return;
         }
+
+        if (!userData.password_confirmed) return;
 
         axios({
             url: "/signup",
@@ -52,13 +57,15 @@ const RegisterForm = (props) => {
             headers: {
                 Authorization: `Bearer ${cookies.access_token}`
             },
-            data: qs.stringify({
-                username: "",
-                password: "",
-                company: "",
-                address: "",
+            method: "POST",
+            data: {
+                username: userData.username,
+                password: userData.password,
+                company: userData.company,
+                address: userData.address,
+                country: userData.country,
                 access_lvl: 0
-            })
+            }
         }).then((res) => console.log(res));
     }
 
@@ -68,32 +75,24 @@ const RegisterForm = (props) => {
             <Form className="text-start">
                 <Form.Group className="mb-3">
                     <Form.Label>Username</Form.Label>
-                    <Form.Control name="username" type="text" placeholder="Username" onChange={userDataChange} />
+                    <Form.Control name="username" type="text" placeholder="Username" disabled value={userData.username} />
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label>Company Name</Form.Label>
                     <Form.Control name="company" type="text" placeholder="Company Name" onChange={userDataChange} />
                 </Form.Group>
-                <Row className="mb-3">
-                    <Form.Group as={Col} xs="9">
-                        <Form.Label>Street</Form.Label>
-                        <Form.Control name="address_street" type="text" placeholder="Street" onChange={userDataChange}></Form.Control>
-                    </Form.Group>
-                    <Form.Group as={Col} xs="3">
-                        <Form.Label>Number</Form.Label>
-                        <Form.Control name="address_number" type="text" placeholder="No." onChange={userDataChange}></Form.Control>
-                    </Form.Group>
-                </Row>
-                <Row className="mb-3">
-                    <Form.Group as={Col} xs="6">
-                        <Form.Label>Zip Code</Form.Label>
-                        <Form.Control name="address_zip" type="text" placeholder="Zip Code" onChange={userDataChange}></Form.Control>
-                    </Form.Group>
-                    <Form.Group as={Col} xs="6">
-                        <Form.Label>City</Form.Label>
-                        <Form.Control name="address_city" type="text" placeholder="City" onChange={userDataChange}></Form.Control>
-                    </Form.Group>
-                </Row>
+                <Form.Group>
+                    <Form.Label>Address</Form.Label>
+                    <Form.Control name="address" type="text" placeholder="Address" onChange={userDataChange}></Form.Control>
+                </Form.Group>
+                <Form.Group>
+                    <Form.Label>Country</Form.Label>
+                    <Form.Select name="country" value={userData.country} onChange={userDataChange}>
+                        {getNames().sort().map((item, index) =>
+                            <option value={getCode(item)} key={index}>{item}</option>
+                        )}
+                    </Form.Select>
+                </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label>User Type</Form.Label>
                     <Form.Select name="type" value={userData.type} onChange={userDataChange}>
