@@ -1,0 +1,35 @@
+.vertical-timeline::before {
+    left: 28px !important;
+    background-color: #ddd !important;
+}
+
+.vertical-timeline-element-icon>img {
+    height: 60px;
+    width: 60px;
+    padding: 5px;
+}
+
+.vertical-timeline-element-icon {
+    -webkit-box-shadow: 0 0 0 4px #ddd, inset 0 2px 0 rgb(0 0 0 / 8%), 0 3px 0 4px rgb(0 0 0 / 5%);
+    box-shadow: 0 0 0 4px #ddd, inset 0 2px 0 rgb(0 0 0 / 8%), 0 3px 0 4px rgb(0 0 0 / 5%);
+    height: 60px;
+    width: 60px;
+    background-color: white;
+}
+
+.vertical-timeline-element-content {
+    margin-left: 90px !important;
+    border: solid 1px rgba(0, 0, 0, 0.125);
+}
+
+.vertical-timeline-element-content .address>p {
+    font-weight: 400 !important;
+}
+
+.vertical-timeline-element-content-arrow {
+    border-right: solid 7px #ddd;
+}
+
+.vertical-timeline-element-date .badge {
+    vertical-align: text-bottom;
+}
