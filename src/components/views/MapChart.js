@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { geoCylindricalStereographic } from 'd3-geo-projection';
 import geo from '../util/map.json';
@@ -6,7 +6,7 @@ import geo from '../util/map.json';
 const MapChart = ({ setTooltipContent }) => {
     return (
         <React.Fragment>
-            <ComposableMap projection={geoCylindricalStereographic()} width={960} height={500}>
+            <ComposableMap projection={geoCylindricalStereographic()} width={960} height={500} data-tip="">
                 <Geographies geography={geo}>
                     {({ geographies }) =>
                         geographies.map((geo) => (
@@ -41,4 +41,4 @@ const MapChart = ({ setTooltipContent }) => {
     );
 }
 
-export default MapChart;
+export default memo(MapChart);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import ReactTooltip from "react-tooltip";
 import MapChart from "../views/MapChart";
@@ -11,10 +11,8 @@ const Incidents = (props) => {
             <Row>
                 <Col>
                     <h1>Incident Map</h1>
-                    <div data-tip="hi" data-for="hello">
-                        <MapChart setTooltipContent={setTooltip}></MapChart>
-                    </div>
-                    <ReactTooltip id="hello" />
+                    <MapChart setTooltipContent={setTooltip}></MapChart>
+                    <ReactTooltip>{tooltip}</ReactTooltip>
                 </Col>
             </Row>
         </Container>
