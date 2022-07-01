@@ -15,18 +15,24 @@ const CustomNavbar = (props) => {
         navigate("/");
     }
 
-    const register = () => {
-
-    }
-
     return (
         <Navbar bg="light">
             <Container>
                 <Navbar.Brand>Pharma Track&Trace</Navbar.Brand>
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
+                    <Link to="/search" className={"me-2" + (cookies.access_level === "4" ? "" : " d-none")}>
+                        <Button variant="outline-dark">
+                            Search
+                        </Button>
+                    </Link>
+                    <Link to="/incidents" className={"me-2" + (cookies.access_level === "4" ? "" : " d-none")}>
+                        <Button variant="outline-dark">
+                            Incidents
+                        </Button>
+                    </Link>
                     <Link to="/register" className={"me-2" + (cookies.access_level === "4" ? "" : " d-none")}>
-                        <Button variant="outline-dark" onClick={register}>
+                        <Button variant="outline-dark">
                             Register User
                         </Button>
                     </Link>

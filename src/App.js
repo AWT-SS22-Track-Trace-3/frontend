@@ -5,7 +5,7 @@ import TransactionHistory from './components/pages/TransactionHistory';
 import Footer from './components/views/Footer';
 import RedirectHandler from './components/pages/RedirectHandler';
 import CustomNavbar from './components/views/CustomNavbar';
-
+import Incidents from './components/pages/Incidents';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
@@ -19,6 +19,7 @@ function App() {
                     <Route exact path="/register" element={<Login mode="register" />} key={document.location.href} />
                     <Route exact path="/login" element={<Login mode="login" />} key={document.location.href} />
                     <Route exact path="/search" element={<Search key={document.location.href} />} />
+                    <Route exact path="/incidents" element={<Incidents key={document.location.href} />} />
                     <Route exact path="/history/:id" element={<TransactionHistory key={document.location.href} />} />
                 </Routes>
                 <Footer></Footer>
