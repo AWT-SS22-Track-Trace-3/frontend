@@ -9,7 +9,7 @@ const TimelineDates = (props) => {
                 <p className="d-inline">{props.checkin}</p>
             </span>
             <span>
-                <Badge bg="danger" className="me-1">Checkout</Badge>
+                <Badge bg="danger" className={"me-1 " + (props.checkout ? "" : "d-none")}>Checkout</Badge>
                 <p className="d-inline">{props.checkout}</p>
             </span>
         </div>

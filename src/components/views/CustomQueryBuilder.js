@@ -14,12 +14,12 @@ const CustomQueryBuilder = (props) => {
             operator: "="
         },
         {
-            name: 'serial',
+            name: 'serial_number',
             label: 'Serial Number',
             operator: "="
         },
         {
-            name: 'lot',
+            name: 'batch_number',
             label: 'Lot Number',
             operator: "="
         },
@@ -66,7 +66,7 @@ const CustomQueryBuilder = (props) => {
                 controlElements={{ ...bootstrapControlElements, valueEditor: CustomValueEditor }}
                 controlClassnames={bootstrapControlClassnames}
             ></QueryBuilder>
-            <Button onClick={() => props.searchHandler(query)}>Search</Button>
+            <Button onClick={() => props.searchHandler(formatQuery(query, "mongodb"))}>Search</Button>
             {/*<p>{formatQuery(query, "mongodb")}</p>*/}
         </div>
     );

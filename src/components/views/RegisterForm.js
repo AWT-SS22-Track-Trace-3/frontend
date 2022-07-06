@@ -18,9 +18,15 @@ const RegisterForm = (props) => {
         username: "",
         password: "",
         password_confirmed: false,
-        address: "",
+        address: {
+            street: "",
+            number: "",
+            zip: "",
+            city: "",
+            country: "DE",
+        },
         country: "DE",
-        access_lvl: 0
+        type: ""
     })
 
     const userDataChange = (event) => {
@@ -32,6 +38,12 @@ const RegisterForm = (props) => {
             setUserData({ ...userData, password_confirmed: checkPassword(value) });
         } else if (name === "company") {
             setUserData({ ...userData, company: value, username: generateUsername(value) });
+        } else if (name.split("_").length == 2) {
+            let split = name.split("_");
+            let split_pre = split[0];
+            let split_post = split[1];
+
+            setUserData({ ...userData, address: { ...userData.address, [split_post]: value } });
         } else {
             setUserData({ ...userData, [name]: value });
         }
@@ -62,9 +74,9 @@ const RegisterForm = (props) => {
                 username: userData.username,
                 password: userData.password,
                 company: userData.company,
-                address: userData.address,
+                address: { ...userData.address, zip_code: userData.zip },
                 country: userData.country,
-                access_lvl: 0
+                type: userData.type
             }
         }).then((res) => console.log(res));
     }
@@ -81,13 +93,29 @@ const RegisterForm = (props) => {
                     <Form.Label>Company Name</Form.Label>
                     <Form.Control name="company" type="text" placeholder="Company Name" onChange={userDataChange} />
                 </Form.Group>
-                <Form.Group>
-                    <Form.Label>Address</Form.Label>
-                    <Form.Control name="address" type="text" placeholder="Address" onChange={userDataChange}></Form.Control>
-                </Form.Group>
+                <Row>
+                    <Form.Group as={Col} xs={8}>
+                        <Form.Label>Street</Form.Label>
+                        <Form.Control name="address_street" type="text" placeholder="Address" onChange={userDataChange}></Form.Control>
+                    </Form.Group>
+                    <Form.Group as={Col} xs={4}>
+                        <Form.Label>Number</Form.Label>
+                        <Form.Control name="address_number" type="text" placeholder="Number" onChange={userDataChange}></Form.Control>
+                    </Form.Group>
+                </Row>
+                <Row>
+                    <Form.Group as={Col}>
+                        <Form.Label>Zip Code</Form.Label>
+                        <Form.Control name="address_zip" type="text" placeholder="Zip Code" onChange={userDataChange}></Form.Control>
+                    </Form.Group>
+                    <Form.Group as={Col}>
+                        <Form.Label>City</Form.Label>
+                        <Form.Control name="address_city" type="text" placeholder="City" onChange={userDataChange}></Form.Control>
+                    </Form.Group>
+                </Row>
                 <Form.Group>
                     <Form.Label>Country</Form.Label>
-                    <Form.Select name="country" value={userData.country} onChange={userDataChange}>
+                    <Form.Select name="address_country" value={userData.address.country} onChange={userDataChange}>
                         {getNames().sort().map((item, index) =>
                             <option value={getCode(item)} key={index}>{item}</option>
                         )}
@@ -96,10 +124,11 @@ const RegisterForm = (props) => {
                 <Form.Group className="mb-3">
                     <Form.Label>User Type</Form.Label>
                     <Form.Select name="type" value={userData.type} onChange={userDataChange}>
-                        <option value="2">Manufacturer</option>
-                        <option value="0">Wholesaler/Repackager</option>
-                        <option value="1">Dispenser</option>
-                        <option value="3">Authority</option>
+                        <option value="manufacturer">Manufacturer</option>
+                        <option value="wholesaler">Wholesaler</option>
+                        <option value="repackager">Repackager</option>
+                        <option value="dispenser">Dispenser</option>
+                        <option value="authority">Authority</option>
                     </Form.Select>
                 </Form.Group>
                 <div className="divider-horizontal my-4"></div>

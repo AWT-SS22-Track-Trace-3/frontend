@@ -22,7 +22,9 @@ function App() {
                     <Route exact path="/incidents" element={<Incidents key={document.location.href} />} />
                     <Route exact path="/history/:id" element={<TransactionHistory key={document.location.href} />} />
                 </Routes>
-                <Footer></Footer>
+                {
+                    //<Footer></Footer>
+                }
             </div>
         </Router>
     );

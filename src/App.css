@@ -49,3 +49,7 @@
     background-color: #d1d1d1;
     height: 1px;
 }
+
+.chain_d-none>div {
+    display: none;
+}
