@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import React, { useState } from "react";
+import { Container, Row, Col, Modal } from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import ReactTooltip from "react-tooltip";
 import MapChart from "../views/MapChart";
@@ -7,11 +7,12 @@ import IncidentReport from "../views/IncidentReport";
 import axios from "axios";
 
 const Incidents = (props) => {
-    const [cookies, setCookie] = useCookies(["access_token"]);
+    const [cookies] = useCookies(["access_token"]);
     const [tooltip, setTooltip] = useState("");
     const [incidents, setIncidents] = useState({
         country: "",
-        incidents: []
+        incidents: [],
+        show: false
     });
 
     const onClickHandler = (country, incidentCount) => {
@@ -24,7 +25,7 @@ const Incidents = (props) => {
                 }
             }).then((res) => {
                 console.log(res);
-                setIncidents({ country, incidents: res.data })
+                setIncidents({ country, incidents: res.data, show: true })
             });
         }
     }
@@ -38,11 +39,16 @@ const Incidents = (props) => {
                     <ReactTooltip>{tooltip}</ReactTooltip>
                 </Col>
             </Row>
-            <Row>
-                <Col md={{ span: 8, offset: 2 }}>
+            <Modal
+                fullscreen
+                show={incidents.show}
+                onHide={() => setIncidents({...incidents, show: false})}
+            >
+                <Modal.Header closeButton></Modal.Header>
+                <Modal.Body>
                     <IncidentReport data={incidents}></IncidentReport>
-                </Col>
-            </Row>
+                </Modal.Body>
+            </Modal>
         </Container >
     );
 }
