@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { utcToZonedTime, toDate, format } from "date-fns-tz";
 import { Accordion } from "react-bootstrap";
+import axios from "axios";
+import { useCookies } from "react-cookie";
 import IncidentList from "./IncidentList";
+import exampleIncidents from "../util/exampleIncidents.json";
+import exampleIncidentSummary from "../util/exampleIncidentsSummary.json";
 import groupSort, { getGlobalDefaultState } from "../util/IncidentGroups";
 import GroupedListView from "./GroupedListView";
+import IncidentAccordion from "./IncidentAccordion";
 
 const selectedStyle = {
     backgroundColor: "rgba(0, 0, 0, 0.03)",
@@ -11,6 +16,7 @@ const selectedStyle = {
 }
 
 const IncidentReport = ({ country, incidentCount }) => {
+    const [cookies] = useCookies(["access_token"]);
     const [globalOptions, setGlobalOptions] = useState({
         pagination: {
             current: 0,
@@ -18,7 +24,8 @@ const IncidentReport = ({ country, incidentCount }) => {
             total: 0
         }
     });
-    const [incidents, setIncidents] = useState([]);
+    const [incidents, setIncidents] = useState(exampleIncidents);
+    const [incidentSummary, setIncidentSummary] = useState(exampleIncidentSummary);
 
     useEffect(() => {
         const defaultOptions = getGlobalDefaultState();
@@ -63,8 +70,8 @@ const IncidentReport = ({ country, incidentCount }) => {
 
         console.log(`http://localhost:8000/incidents?scope=${country}&${query}`);
 
-        /*
-    
+
+
         axios({
             url: `http://localhost:8000/incidents?scope=${country}&${query}`,
             method: "GET",
@@ -73,35 +80,23 @@ const IncidentReport = ({ country, incidentCount }) => {
             }
         }).then((res) => {
             console.log(res);
-            setIncidents({ country, incidents: res.data, show: true })
+            //setIncidents({ country, incidents: res.data, show: true })
         });
-    
-        */
+
+
     }
 
 
     return (
         <GroupedListView
             buttons={globalOptions}
-            title={"Incident Report for " + country}
+            title={"Incident Report " + country}
             selectHandler={globalOptionsSelect}
             paginationHandler={paginationHandler}
             paginationConfig={globalOptions.pagination}
         >
             {incidents.length > 0 ? (
-                <Accordion flush>
-                    <Accordion.Item>
-                        <Accordion.Header>
-                            {
-                                //format(toDate(props.data.incidents[0].reporter.timestamp), "dd.MM.yyyy")
-                                "Imaginary Date"
-                            }
-                        </Accordion.Header>
-                        <Accordion.Body>
-
-                        </Accordion.Body>
-                    </Accordion.Item>
-                </Accordion>
+                <IncidentAccordion items={incidents}></IncidentAccordion>
             ) : (
                 "No known incidents."
             )}

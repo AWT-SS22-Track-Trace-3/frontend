@@ -1,0 +1,32 @@
+[
+    {
+        "group": "12.07.2022",
+        "count": 23,
+        "countCompanies": 21
+    },
+    {
+        "group": "13.07.2022",
+        "count": 26,
+        "countCompanies": 25
+    },
+    {
+        "group": "14.07.2022",
+        "count": 22,
+        "countCompanies": 14
+    },
+    {
+        "group": "15.07.2022",
+        "count": 18,
+        "countCompanies": 3
+    },
+    {
+        "group": "16.07.2022",
+        "count": 25,
+        "countCompanies": 20
+    },
+    {
+        "group": "17.07.2022",
+        "count": 19,
+        "countCompanies": 15
+    }
+]

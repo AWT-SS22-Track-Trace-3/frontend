@@ -7,7 +7,6 @@ import IncidentReport from "../views/IncidentReport";
 import axios from "axios";
 
 const Incidents = (props) => {
-    const [cookies] = useCookies(["access_token"]);
     const [tooltip, setTooltip] = useState("");
     const [incidents, setIncidents] = useState({
         country: "",
