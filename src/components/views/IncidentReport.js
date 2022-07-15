@@ -1,108 +1,112 @@
-import React, { useState } from "react";
-import { Card, Dropdown, DropdownButton } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { utcToZonedTime, toDate, format } from "date-fns-tz";
+import { Accordion } from "react-bootstrap";
 import IncidentList from "./IncidentList";
-
-const buttons = [
-    {
-        title: "Group",
-        items: [
-            {
-                'title': "Company",
-                "value": "company",
-                "sortType": "alphabet"
-            },
-            {
-                'title': "Incident Type",
-                "value": "type",
-                "sortType": "alphabet"
-            },
-            {
-                'title': "Time (Day)",
-                "value": "day",
-                "sortType": "day"
-            },
-            {
-                'title': "Time (Month)",
-                "value": "month",
-                "sortType": "month"
-            },
-            {
-                'title': "Time (Year)",
-                "value": "year",
-                "sortType": "month"
-            }
-        ]
-    },
-    {
-        title: "Sort",
-        items: [
-            {
-                'title': "Ascending",
-                "value": "asc"
-            },
-            {
-                'title': "Descending",
-                "value": "dsc"
-            }
-        ]
-    }
-]
+import groupSort, { getGlobalDefaultState } from "../util/IncidentGroups";
+import GroupedListView from "./GroupedListView";
 
 const selectedStyle = {
     backgroundColor: "rgba(0, 0, 0, 0.03)",
     color: "#00ACC1"
 }
 
-const IncidentReport = (props) => {
+const IncidentReport = ({ country, incidentCount }) => {
     const [globalOptions, setGlobalOptions] = useState({
-        sort: "dsc",
-        group: "day"
+        pagination: {
+            current: 0,
+            interval: 5,
+            total: 0
+        }
     });
+    const [incidents, setIncidents] = useState([]);
 
-    const isSelected = (name, value) => (globalOptions[name] === value)
+    useEffect(() => {
+        const defaultOptions = getGlobalDefaultState();
+        setGlobalOptions({ ...globalOptions, ...defaultOptions })
 
-    const optionsChange = (name, value) => {
+        if (country && incidentCount > 0) {
+            fetchIncidents(country, getFilteredOptions(defaultOptions));
+        }
+    }, []);
 
-        setGlobalOptions({ ...globalOptions, [name]: value })
+    const globalOptionsSelect = (key, value) => {
+        let newItems = globalOptions[key].items.map((item) => ({
+            ...item,
+            selected: (item.value === value || false)
+        }));
+
+        const updatedOptions = { ...globalOptions, [key]: { ...globalOptions[key], items: newItems } };
+
+        setGlobalOptions(updatedOptions);
+        fetchIncidents(country, getFilteredOptions(updatedOptions));
     }
 
+    const getFilteredOptions = (options) => {
+        let filtered = {};
+        Object.keys(options).map((key) => {
+            filtered[key] = options[key].items.filter((x) => x.selected).map((item) => item.value);
+        });
+
+        return filtered;
+    }
+
+    const paginationHandler = (requestedPage) => {
+        setGlobalOptions({ ...globalOptions, pagination: { ...globalOptions.pagination, current: requestedPage } })
+        console.log(requestedPage);
+    }
+
+    const fetchIncidents = (country, options) => {
+
+        let optionKeys = Object.keys(options);
+
+        let query = optionKeys.map((key) => (`${key}=${options[key]}`)).join("&");
+
+        console.log(`http://localhost:8000/incidents?scope=${country}&${query}`);
+
+        /*
+    
+        axios({
+            url: `http://localhost:8000/incidents?scope=${country}&${query}`,
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${cookies.access_token}`
+            }
+        }).then((res) => {
+            console.log(res);
+            setIncidents({ country, incidents: res.data, show: true })
+        });
+    
+        */
+    }
+
+
     return (
-        <div>
-            <Card>
-                <Card.Header className="d-flex justify-content-between align-items-center">
-                    <h5 className="m-0">Incident report for {props.data.country}</h5>
-                    <div className="d-flex">
-                        {buttons.map((button) => (
-                            <DropdownButton key={button.title} title={button.title} className="ms-2">
-                                {button.items.map((item, i) => {
-                                    const name = button.title.toLowerCase();
+        <GroupedListView
+            buttons={globalOptions}
+            title={"Incident Report for " + country}
+            selectHandler={globalOptionsSelect}
+            paginationHandler={paginationHandler}
+            paginationConfig={globalOptions.pagination}
+        >
+            {incidents.length > 0 ? (
+                <Accordion flush>
+                    <Accordion.Item>
+                        <Accordion.Header>
+                            {
+                                //format(toDate(props.data.incidents[0].reporter.timestamp), "dd.MM.yyyy")
+                                "Imaginary Date"
+                            }
+                        </Accordion.Header>
+                        <Accordion.Body>
 
-                                    return (
-                                        <Dropdown.Item
-                                            key={i}
-                                            value={item.value}
-                                            style={isSelected(name, item.value) ? selectedStyle : {}}
-                                            onClick={() => optionsChange(name, item.value)}
-                                        >
+                        </Accordion.Body>
+                    </Accordion.Item>
+                </Accordion>
+            ) : (
+                "No known incidents."
+            )}
 
-                                            {item.title}
-                                        </Dropdown.Item>
-                                    )
-                                })}
-                            </DropdownButton>
-                        ))}
-                    </div>
-                </Card.Header>
-                <Card.Body>
-                    {props.data.incidents.length > 0 ? (
-                        <IncidentList data={props.data.incidents}></IncidentList>
-                    ) : (
-                        "No known incidents."
-                    )}
-
-                </Card.Body>
-            </Card>
-        </div>
+        </GroupedListView>
     );
 }
 

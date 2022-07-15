@@ -11,23 +11,25 @@ const Incidents = (props) => {
     const [tooltip, setTooltip] = useState("");
     const [incidents, setIncidents] = useState({
         country: "",
-        incidents: [],
+        incidentCount: 0,
         show: false
     });
 
     const onClickHandler = (country, incidentCount) => {
-        if (incidentCount > 0) {
-            axios({
-                url: `http://localhost:8000/incidents?scope=${country}`,
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${cookies.access_token}`
-                }
-            }).then((res) => {
-                console.log(res);
-                setIncidents({ country, incidents: res.data, show: true })
-            });
+        setIncidents({ ...incidents, country, incidentCount, show: true });
+    }
+
+    /*
+
+        {
+            group: "day",
+            sort: "asc"
         }
+
+    */
+
+    const optionsChange = (options) => {
+        setIncidents({ ...incidents, options })
     }
 
     return (
@@ -42,11 +44,11 @@ const Incidents = (props) => {
             <Modal
                 fullscreen
                 show={incidents.show}
-                onHide={() => setIncidents({...incidents, show: false})}
+                onHide={() => setIncidents({ ...incidents, show: false })}
             >
                 <Modal.Header closeButton></Modal.Header>
                 <Modal.Body>
-                    <IncidentReport data={incidents}></IncidentReport>
+                    <IncidentReport country={incidents.country} incidentCount={incidents.incidentCount}></IncidentReport>
                 </Modal.Body>
             </Modal>
         </Container >
