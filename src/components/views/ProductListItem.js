@@ -28,10 +28,14 @@ const ProductListItem = (props) => {
                     <Image src={getLocaleImg(props.item)} height="25px" className="me-2" style={{ verticalAlign: "sub" }}></Image>
                     {props.item.name}
                     <div style={{ float: "right" }}>
+                        {
+                            props.item.reported ? (
+                                <Badge bg="danger">Incident</Badge>
+                            ) : (<></>)}
                         <Link to={"/history/" + props.item.serial_number} className={(props.hideLink ? "d-none" : "")}>
                             <Button size="sm" variant="link">Transaction History</Button>
                         </Link>
-                        {props.noReport ? (<></>) : (
+                        {props.noReport || props.item.reported ? (<></>) : (
                             <Button size="sm" variant="link" onClick={() => props.reportHandler(props.item.serial_number)}>Report</Button>
                         )}
                     </div>
