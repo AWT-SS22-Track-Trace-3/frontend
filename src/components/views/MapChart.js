@@ -7,23 +7,22 @@ import geo from '../util/map.json';
 import axios from "axios";
 import API from "../util/API";
 
-const MapChart = ({ setTooltipContent, onClickHandler }) => {
-    const [data, setData] = useState([]);
-    const [cookies, setCookie] = useCookies(["access_token"]);
-
+const MapChart = ({ setTooltipContent, onClickHandler, data }) => {
     const colorScale = scaleLinear()
         .range(["#ffedea", "#ff5233"]);
 
-    useEffect(() => {
-        console.log("useEffect called")
-        axios({
-            url: "http://localhost:8000/incidents?scope=country",
-            headers: {
-                Authorization: `Bearer ${cookies.access_token}`
-            },
-            method: "GET"
-        }).then((res) => setData(res.data));
-    }, [])
+    /*
+useEffect(() => {
+    console.log("useEffect called")
+    axios({
+        url: "http://localhost:8000/incidents/summary/all",
+        headers: {
+            Authorization: `Bearer ${cookies.access_token}`
+        },
+        method: "GET"
+    }).then((res) => setData(res.data));
+}, [])
+*/
 
     return (
         <React.Fragment>

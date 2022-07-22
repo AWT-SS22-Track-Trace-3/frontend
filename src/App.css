@@ -53,3 +53,7 @@
 .chain_d-none>div {
     display: none;
 }
+
+#incident_container p {
+    margin: 0;
+}

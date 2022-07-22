@@ -1,3 +1,5 @@
+import { format } from "date-fns"
+
 export const formatAddress = (address) => {
     if (!address || !address.format)
         return;
@@ -19,4 +21,12 @@ export const formatAddress = (address) => {
             </span>
         )
     }
+}
+
+export const formatTimestamp = (timestamp) => {
+    let date = new Date(timestamp)
+
+    console.log(date)
+
+    return format(date, "dd.MM.yyyy, HH:mm aa")
 }

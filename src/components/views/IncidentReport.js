@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { utcToZonedTime, toDate, format } from "date-fns-tz";
-import { Accordion } from "react-bootstrap";
 import axios from "axios";
 import { useCookies } from "react-cookie";
-import IncidentList from "./IncidentList";
-import exampleIncidents from "../util/exampleIncidents.json";
-import exampleIncidentSummary from "../util/exampleIncidentsSummary.json";
 import groupSort, { getGlobalDefaultState } from "../util/IncidentGroups";
 import GroupedListView from "./GroupedListView";
 import IncidentAccordion from "./IncidentAccordion";
@@ -24,15 +19,18 @@ const IncidentReport = ({ country, incidentCount }) => {
             total: 0
         }
     });
-    const [incidents, setIncidents] = useState(exampleIncidents);
-    const [incidentSummary, setIncidentSummary] = useState(exampleIncidentSummary);
+    const [incidents, setIncidents] = useState({
+        country: "",
+        incidents: [],
+        show: false
+    });
 
     useEffect(() => {
         const defaultOptions = getGlobalDefaultState();
         setGlobalOptions({ ...globalOptions, ...defaultOptions })
 
         if (country && incidentCount > 0) {
-            fetchIncidents(country, getFilteredOptions(defaultOptions));
+            fetchIncidentSummary(getFilteredOptions(defaultOptions));
         }
     }, []);
 
@@ -44,14 +42,17 @@ const IncidentReport = ({ country, incidentCount }) => {
 
         const updatedOptions = { ...globalOptions, [key]: { ...globalOptions[key], items: newItems } };
 
+        console.log(updatedOptions)
+
         setGlobalOptions(updatedOptions);
-        fetchIncidents(country, getFilteredOptions(updatedOptions));
+        fetchIncidentSummary(getFilteredOptions(updatedOptions));
     }
 
     const getFilteredOptions = (options) => {
         let filtered = {};
         Object.keys(options).map((key) => {
-            filtered[key] = options[key].items.filter((x) => x.selected).map((item) => item.value);
+            if (options[key].items)
+                filtered[key] = options[key].items.filter((x) => x.selected).map((item) => item.value);
         });
 
         return filtered;
@@ -62,28 +63,45 @@ const IncidentReport = ({ country, incidentCount }) => {
         console.log(requestedPage);
     }
 
-    const fetchIncidents = (country, options) => {
+    const fetchIncidentSummary = (options) => {
 
         let optionKeys = Object.keys(options);
 
         let query = optionKeys.map((key) => (`${key}=${options[key]}`)).join("&");
 
-        console.log(`http://localhost:8000/incidents?scope=${country}&${query}`);
-
-
+        //console.log(`http://localhost:8000/incidents/${country}?${query}`);
 
         axios({
-            url: `http://localhost:8000/incidents?scope=${country}&${query}`,
+            url: `http://localhost:8000/incidents/summary/${country}?${query}`,
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${cookies.access_token}`
             }
         }).then((res) => {
-            console.log(res);
-            //setIncidents({ country, incidents: res.data, show: true })
+            console.log(res.data)
+            setIncidents({ country, incidents: res.data, show: true })
         });
+    }
 
+    const fetchIncidents = (filterValue) => {
+        let filterType = getFilteredOptions(globalOptions)["group"][0];
 
+        axios({
+            url: `http://localhost:8000/incidents/${country}?filter_type=${filterType}&filter_value=${filterValue}`,
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${cookies.access_token}`
+            }
+        }).then((res) => {
+            console.log(res.data)
+
+            let newIncidents = incidents.incidents;
+            let index = newIncidents.findIndex((x) => x["_id"]["raw"] === filterValue)
+
+            newIncidents[index].items = res.data
+
+            setIncidents({ ...incidents, incidents: newIncidents })
+        });
     }
 
 
@@ -95,8 +113,8 @@ const IncidentReport = ({ country, incidentCount }) => {
             paginationHandler={paginationHandler}
             paginationConfig={globalOptions.pagination}
         >
-            {incidents.length > 0 ? (
-                <IncidentAccordion items={incidents}></IncidentAccordion>
+            {incidents.incidents.length > 0 ? (
+                <IncidentAccordion items={incidents.incidents} openHandler={fetchIncidents}></IncidentAccordion>
             ) : (
                 "No known incidents."
             )}

@@ -5,13 +5,12 @@ import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeli
 import 'react-vertical-timeline-component/style.min.css';
 import '../styles/timeline.css';
 import TimelineIcon from "../views/TimelineIcon";
-import transactions from "../util/exampleTransactions.json";
-import data from "../util/init-products.json";
 import TimelineDates from "../views/TimelineDates";
 import ProductListItem from "../views/ProductListItem";
 import { formatAddress } from "../util/CustomFormatter";
 import { useCookies } from "react-cookie";
 import axios from "axios";
+import { UserTypes } from "../util/typeMapper";
 
 const TransactionHistory = (props) => {
     const { id } = useParams();
@@ -71,13 +70,20 @@ const TransactionHistory = (props) => {
                         {sample.supply_chain.map((item, index) =>
                             <VerticalTimelineElement
                                 icon={<TimelineIcon type={item.owner.type} />}
-                                date={<TimelineDates checkin={item.checkin_date} checkout={item.checkout_date} />}
+                                date={<TimelineDates
+                                    checkin={item.checkin_date}
+                                    checkout={item.checkout_date}
+                                    received={item.date_received}
+                                    shipped={item.date_shipped} />}
                                 key={index}
                             >
                                 <div className="text-start">
-                                    <h4>
+                                    <h5>
                                         {item.owner.company}
-                                    </h4>
+                                        <Badge pill bg="info" text="dark" className="ms-2" style={{ verticalAlign: "bottom" }}>
+                                            {UserTypes[item.owner.type]}
+                                        </Badge>
+                                    </h5>
                                     <div className="address mb-3">
                                         <p className="mb-0 mt-1">{formatAddress(item.owner.address)}</p>
                                     </div>
