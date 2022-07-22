@@ -24,9 +24,17 @@ export const formatAddress = (address) => {
 }
 
 export const formatTimestamp = (timestamp) => {
+    if (!timestamp) return "";
+
     let date = new Date(timestamp)
 
-    console.log(date)
+    return format(date, "dd.MM.yyyy, h:mm aa")
+}
 
-    return format(date, "dd.MM.yyyy, HH:mm aa")
+export const getDateFromISOString = (timestamp) => {
+    if (!timestamp) return "";
+
+    let date = new Date(timestamp)
+
+    return format(date, "dd.MM.yyyy")
 }
