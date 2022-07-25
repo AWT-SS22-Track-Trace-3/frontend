@@ -10,5 +10,6 @@ export const UserTypes = {
 export const ShipmentMethods = {
     road: "Road",
     ship: "Ship",
-    air: "Air"
+    air: "Air",
+    sea: "Sea"
 }

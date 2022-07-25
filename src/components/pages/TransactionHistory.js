@@ -10,11 +10,14 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import OwnershipElement from "../views/TransactionHistory/OwnershipElement";
 import ShipmentElement from "../views/TransactionHistory/ShipmentElement";
+import IncidentElement from "../views/TransactionHistory/IncidentElement";
+import TerminationElement from "../views/TransactionHistory/TerminationElement";
 
 const TransactionHistory = (props) => {
     const { id } = useParams();
     const [cookies, setCookie] = useCookies(["access_token, access_level"]);
-    const [sample, setSample] = useState({
+
+    const defaultSample = {
         "name": "",
         "common_name": "",
         "form": "",
@@ -31,7 +34,9 @@ const TransactionHistory = (props) => {
         "manufacturers": [],
         "sellers": [],
         "supply_chain": []
-    });
+    }
+    const resetSample = () => setSample(defaultSample)
+    const [sample, setSample] = useState(defaultSample);
 
     const containerStyle = {
         display: "flex",
@@ -41,14 +46,17 @@ const TransactionHistory = (props) => {
 
     const sampleData = () => {
         axios({
-            url: "http://localhost:8000/product/234567898765367468",
+            url: `http://localhost:8000/product/${id}`,
             method: "GET",
             headers: {
                 Authorization: `Bearer ${cookies.access_token}`
             }
         }).then((res) => {
             console.log(res.data);
-            setSample(res.data)
+            if (Array.isArray(res.data))
+                resetSample();
+            else
+                setSample(res.data)
         });
     }
 
@@ -60,38 +68,35 @@ const TransactionHistory = (props) => {
     return (
         <Container fluid="lg" style={containerStyle}>
             <h1>Supply Chain Overview</h1>
-            <Row>
-                <Col>
-                    <ProductListItem item={sample} hideLink noMargin></ProductListItem>
-                </Col>
-                <Col sm={{ span: 12 }} className="d-flex flex-column">
-                    <VerticalTimeline animate={false} layout={"1-column-left"} lineColor={"black"}>
-                        {sample.supply_chain.map((item, index) => {
-                            return item.type === "change_of_ownership" ? (
-                                <OwnershipElement key={index} item={item}></OwnershipElement>
-                            ) : (
-                                <ShipmentElement key={index} item={item}></ShipmentElement>
-                            )
-                        })}
-                        {
-                            sample.reported ? (
-                                <VerticalTimelineElement
-                                    icon={<TimelineIcon type={"reported"} />}
-                                    className="chain_d-none"
-                                ></VerticalTimelineElement>
-                            ) : (<></>)
-                        }
-                        {
-                            sample.used ? (
-                                <VerticalTimelineElement
-                                    icon={<TimelineIcon type={"dispensed"} />}
-                                    className="chain_d-none"
-                                ></VerticalTimelineElement>
-                            ) : (<></>)
-                        }
-                    </VerticalTimeline>
-                </Col>
-            </Row>
+            {sample.serial_number == "" ? (<div>No such product</div>) : (
+                <Row>
+                    <Col>
+                        <ProductListItem item={sample} hideLink noMargin></ProductListItem>
+                    </Col>
+                    <Col sm={{ span: 12 }} className="d-flex flex-column">
+                        <VerticalTimeline animate={false} layout={"1-column-left"} lineColor={"black"}>
+                            {sample.supply_chain.map((item, index) => {
+                                if (item.type === "change_of_ownership")
+                                    return (
+                                        <OwnershipElement key={index} item={item}></OwnershipElement>
+                                    )
+                                if (item.type === "shipment")
+                                    return (
+                                        <ShipmentElement key={index} item={item}></ShipmentElement>
+                                    )
+                                if (item.type === "incident")
+                                    return (
+                                        <IncidentElement key={index} item={item}></IncidentElement>
+                                    )
+                                if (item.type === "termination")
+                                    return (
+                                        <TerminationElement key={index} item={item}></TerminationElement>
+                                    )
+                            })}
+                        </VerticalTimeline>
+                    </Col>
+                </Row>
+            )}
         </Container >
     );
 }

@@ -14,6 +14,10 @@ const TimelineDates = (props) => {
                     <Badge bg="dark" className="me-1">Shipped</Badge>
                     <p className="d-inline">{formatTimestamp(props.shipped)}</p>
                 </span>
+                <span className={"me-4 " + (props.date ? "" : "d-none")}>
+                    <Badge bg="dark" className="me-1">Date</Badge>
+                    <p className="d-inline">{formatTimestamp(props.date)}</p>
+                </span>
             </div>
             <div className="d-flex flex-column align-items-start">
                 <span>

@@ -32,6 +32,10 @@ const ProductListItem = (props) => {
                             props.item.reported ? (
                                 <Badge bg="danger">Incident</Badge>
                             ) : (<></>)}
+                        {
+                            props.item.used ? (
+                                <Badge bg="success">Terminated</Badge>
+                            ) : (<></>)}
                         <Link to={"/history/" + props.item.serial_number} className={(props.hideLink ? "d-none" : "")}>
                             <Button size="sm" variant="link">Transaction History</Button>
                         </Link>
@@ -62,10 +66,10 @@ const ProductListItem = (props) => {
                                 <p>{getLocale(props.item) === "eu" ? "Serial Number" : "Standard Numeric Identifier"}: <span style={{ fontWeight: 500 }}>{props.item.serial_number}</span></p>
                                 <p>Batch Number: <span style={{ fontWeight: 500 }}>{props.item.batch_number}</span></p>
                                 <p>Manufacturers: {props.item.manufacturers.map((manufacturer, index) => (
-                                    <span key={index} style={{ fontWeight: 500 }}>{manufacturer.company}</span>
+                                    <span key={index} style={{ fontWeight: 500 }}>{((index > 0 ? ", " : "") + manufacturer.company)}</span>
                                 ))}</p>
                                 <p>Sellers: {props.item.sellers.map((seller, index) => (
-                                    <span key={index} style={{ fontWeight: 500 }}>{seller.company}</span>
+                                    <span key={index} style={{ fontWeight: 500 }}>{((index > 0 ? ", " : "") + seller.company)}</span>
                                 ))}</p>
                             </div>
                             <div className="ms-5">
