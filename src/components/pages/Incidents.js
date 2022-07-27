@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Modal } from "react-bootstrap";
-import { useCookies } from "react-cookie";
 import ReactTooltip from "react-tooltip";
 import MapChart from "../views/MapChart";
 import IncidentReport from "../views/IncidentReport";
-import axios from "axios";
 import requestMaker from "../util/RequestMaker";
 import requestProvider from "../util/API";
 
 const Incidents = (props) => {
     const [tooltip, setTooltip] = useState("");
-    const [cookies, setCookie] = useCookies(["access_token"]);
     const [incidents, setIncidents] = useState({
         country: "",
         incidentCount: 0,
@@ -24,7 +21,7 @@ const Incidents = (props) => {
     }, [])
 
     const getMapData = () => {
-        requestMaker(requestProvider().getIncidentSummary("all"), cookies.access_token).make()
+        requestMaker(requestProvider().getIncidentSummary("all")).make()
             .then(res => setMapData(res.data));
     }
 

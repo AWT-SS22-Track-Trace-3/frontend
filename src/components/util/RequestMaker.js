@@ -1,14 +1,14 @@
 import axios from "axios";
 import requestProvider from "./API";
 import qs from "qs";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
 
-const requestMaker = (request, access_token) => {
+const requestMaker = (request) => {
     const client = axios.create();
-    const refresh_request = requestProvider().refreshToken()
+    let access_token = Cookies.get("access_token");
 
     const refresh = () => {
-        //return axios({ ...refresh_request, headers: { Authorization: `Bearer ${access_token}` } })
+        //return axios({ ...requestProvider().refreshToken(), headers: { Authorization: `Bearer ${access_token}` } })
         return axios({
             url: "http://localhost:8000/token",
             method: "POST",

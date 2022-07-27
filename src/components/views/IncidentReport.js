@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { getGlobalDefaultState } from "../util/IncidentGroups";
 import GroupedListView from "./GroupedListView";
 import IncidentAccordion from "./IncidentAccordion";
@@ -7,7 +6,6 @@ import requestMaker from "../util/RequestMaker";
 import requestProvider from "../util/API";
 
 const IncidentReport = ({ country, incidentCount }) => {
-    const [cookies] = useCookies(["access_token"]);
     const [globalOptions, setGlobalOptions] = useState({
         pagination: {
             current: 0,
@@ -63,7 +61,7 @@ const IncidentReport = ({ country, incidentCount }) => {
 
         let query = optionKeys.map((key) => (`${key}=${options[key]}`)).join("&");
 
-        requestMaker(requestProvider().getIncidentSummary(country, query), cookies.access_token).make()
+        requestMaker(requestProvider().getIncidentSummary(country, query)).make()
             .then(res => setIncidents({ country, incidents: res.data, show: true }))
     }
 
@@ -71,7 +69,7 @@ const IncidentReport = ({ country, incidentCount }) => {
         let filterType = getFilteredOptions(globalOptions)["group"][0];
         let query = `filter_type=${filterType}&filter_value=${filterValue}`
 
-        requestMaker(requestProvider().getIncidents(country, query), cookies.access_token).make()
+        requestMaker(requestProvider().getIncidents(country, query)).make()
             .then(res => {
                 let newIncidents = incidents.incidents;
                 let index = newIncidents.findIndex((x) => x["_id"]["raw"] === filterValue)

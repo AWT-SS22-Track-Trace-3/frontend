@@ -1,16 +1,14 @@
 import React, { useState } from "react";
 import { Container, Navbar, Button } from "react-bootstrap";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
 
 const CustomNavbar = (props) => {
-    const [cookies, setCookie, removeCookie] = useCookies();
     const navigate = useNavigate();
 
     const logout = () => {
-
-        removeCookie("access_token");
-        removeCookie("access_level");
+        Cookies.remove("access_token");
+        Cookies.remove("access_lvl");
 
         navigate("/");
     }
@@ -21,22 +19,22 @@ const CustomNavbar = (props) => {
                 <Navbar.Brand>Pharma Track&Trace</Navbar.Brand>
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
-                    <Link to="/search" className={"me-2" + (cookies.access_level === "4" ? "" : " d-none")}>
+                    <Link to="/search" className={"me-2" + (Cookies.get("access_lvl") === "4" ? "" : " d-none")}>
                         <Button variant="outline-dark">
                             Search
                         </Button>
                     </Link>
-                    <Link to="/incidents" className={"me-2" + (cookies.access_level === "4" ? "" : " d-none")}>
+                    <Link to="/incidents" className={"me-2" + (Cookies.get("access_lvl") === "4" ? "" : " d-none")}>
                         <Button variant="outline-dark">
                             Incidents
                         </Button>
                     </Link>
-                    <Link to="/register" className={"me-2" + (cookies.access_level === "4" ? "" : " d-none")}>
+                    <Link to="/register" className={"me-2" + (Cookies.get("access_lvl") === "4" ? "" : " d-none")}>
                         <Button variant="outline-dark">
                             Register User
                         </Button>
                     </Link>
-                    {cookies.access_token ? (
+                    {Cookies.get("access_token") ? (
                         <Button variant="danger" onClick={logout}>
                             Logout
                         </Button>

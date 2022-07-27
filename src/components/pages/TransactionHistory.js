@@ -4,10 +4,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
 import '../styles/timeline.css';
-import TimelineIcon from "../views/TimelineIcon";
 import ProductListItem from "../views/ProductListItem";
-import { useCookies } from "react-cookie";
-import axios from "axios";
 import OwnershipElement from "../views/TransactionHistory/OwnershipElement";
 import ShipmentElement from "../views/TransactionHistory/ShipmentElement";
 import IncidentElement from "../views/TransactionHistory/IncidentElement";
@@ -17,7 +14,6 @@ import requestProvider from "../util/API";
 
 const TransactionHistory = (props) => {
     const { id } = useParams();
-    const [cookies, setCookie] = useCookies(["access_token, access_level"]);
 
     const defaultSample = {
         "name": "",
@@ -47,7 +43,7 @@ const TransactionHistory = (props) => {
     }
 
     const sampleData = () => {
-        requestMaker(requestProvider().getProduct(id), cookies.access_token).make()
+        requestMaker(requestProvider().getProduct(id)).make()
             .then(res => {
                 if (Array.isArray(res.data))
                     resetSample();

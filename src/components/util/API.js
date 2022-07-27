@@ -1,6 +1,6 @@
 const endpoints = {
     getProduct: {
-        path: "/products/%SERIAL_NUMBER%",
+        path: "/product/%SERIAL_NUMBER%",
         method: "GET"
     },
     searchProducts: {
@@ -46,6 +46,7 @@ const requestProvider = () => {
     }
 
     const init = (endpoint, replacements = {}, query = undefined) => {
+        console.log(endpoint)
         return {
             url: getFormattedURL(replacements, endpoint.path) + (query ? `?${query}` : ""),
             method: endpoint.method,
@@ -57,8 +58,8 @@ const requestProvider = () => {
         getProduct: (serial_number) => init(endpoints.getProduct, { '%SERIAL_NUMBER%': serial_number }),
         searchProducts: (body) => ({ ...init(endpoints.searchProducts), data: body }),
         postIncident: (body) => ({ ...init(endpoints.postIncident), data: body }),
-        getIncidentSummary: (country, query) => ({ ...init(endpoints.getIncidentSummary, { '%COUNTRY': country }, query) }),
-        getIncidents: (country, query) => ({ ...init(endpoints.getIncidents, { '%COUNTRY': country }, query) }),
+        getIncidentSummary: (country, query) => ({ ...init(endpoints.getIncidentSummary, { '%COUNTRY%': country }, query) }),
+        getIncidents: (country, query) => ({ ...init(endpoints.getIncidents, { '%COUNTRY%': country }, query) }),
         getToken: (body) => ({ ...init(endpoints.getToken), data: body, withCredentials: true }),
         refreshToken: () => ({ ...init(endpoints.refreshToken), withCredentials: true }),
         createUser: (body) => ({ ...init(endpoints.createUser), data: body }),

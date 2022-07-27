@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Button } from 'react-bootstrap';
-import { Col, Container, Row, Alert } from 'react-bootstrap';
-import Form from 'react-bootstrap/Form';
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
+import React, { useEffect } from "react";
+import { Col, Container, Row } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import LoginForm from "../views/LoginForm";
 import RegisterForm from "../views/RegisterForm";
@@ -11,11 +9,8 @@ import RegisterForm from "../views/RegisterForm";
 const Login = (props) => {
     let navigate = useNavigate();
 
-    const [cookies] = useCookies(["access_token"]);
-
     useEffect(() => {
-        console.log(!cookies.access_token)
-        if (props.mode === "login" && cookies.access_token) navigate("/search");
+        if (props.mode === "login" && Cookies.get("access_token")) navigate("/search");
     });
 
     const containerStyle = {

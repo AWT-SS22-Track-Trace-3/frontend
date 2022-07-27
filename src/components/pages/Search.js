@@ -2,14 +2,11 @@ import React, { useState } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import CustomQueryBuilder from "../views/CustomQueryBuilder";
 import ProductList from "../views/ProductList";
-import { useCookies } from "react-cookie";
 import ReportModal from "../views/ReportPopover";
 import requestMaker from "../util/RequestMaker";
 import requestProvider from "../util/API";
 
 const Search = () => {
-
-    const [cookies] = useCookies(["access_token"]);
     const [report, setReport] = useState({
         show: false,
         product: "",
@@ -17,7 +14,7 @@ const Search = () => {
     const [results, setResults] = useState([]);
 
     const handleSearch = (query) => {
-        requestMaker(requestProvider().searchProducts({ query }), cookies["access_token"]).make()
+        requestMaker(requestProvider().searchProducts({ query: JSON.parse(query) })).make()
             .then(res => setResults(res.data));
     }
 

@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import Form from 'react-bootstrap/Form';
 import { Button, Row, Col } from 'react-bootstrap';
-import { useCookies } from "react-cookie";
 import { getNames, getCode } from "country-list";
 import requestMaker from "../util/RequestMaker";
 import requestProvider from "../util/API";
 
 const RegisterForm = (props) => {
-    const [cookies] = useCookies(["access_token, access_level"]);
-
     const [userData, setUserData] = useState({
         company: "",
         username: "",
@@ -66,7 +63,7 @@ const RegisterForm = (props) => {
             type: userData.type
         }
 
-        requestMaker(requestProvider().createUser(body), cookies.access_token).make();
+        requestMaker(requestProvider().createUser(body)).make();
     }
 
     return (
