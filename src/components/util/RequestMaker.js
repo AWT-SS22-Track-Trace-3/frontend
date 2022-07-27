@@ -42,15 +42,11 @@ const requestMaker = (request, access_token) => {
                 return client(config);
 
             } catch (err) {
-                //return Promise.reject(err)
-                console.log(err);
-                return;
+                return Promise.reject(err)
             }
         }
 
-        //return Promise.reject(error)
-        console.log(error);
-        return;
+        return Promise.reject(error)
     })
 
     return {
