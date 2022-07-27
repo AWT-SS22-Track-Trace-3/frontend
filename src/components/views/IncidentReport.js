@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useCookies } from "react-cookie";
-import groupSort, { getGlobalDefaultState } from "../util/IncidentGroups";
+import { getGlobalDefaultState } from "../util/IncidentGroups";
 import GroupedListView from "./GroupedListView";
 import IncidentAccordion from "./IncidentAccordion";
-
-const selectedStyle = {
-    backgroundColor: "rgba(0, 0, 0, 0.03)",
-    color: "#00ACC1"
-}
+import requestMaker from "../util/RequestMaker";
+import requestProvider from "../util/API";
 
 const IncidentReport = ({ country, incidentCount }) => {
     const [cookies] = useCookies(["access_token"]);
@@ -42,8 +38,6 @@ const IncidentReport = ({ country, incidentCount }) => {
 
         const updatedOptions = { ...globalOptions, [key]: { ...globalOptions[key], items: newItems } };
 
-        console.log(updatedOptions)
-
         setGlobalOptions(updatedOptions);
         fetchIncidentSummary(getFilteredOptions(updatedOptions));
     }
@@ -53,6 +47,7 @@ const IncidentReport = ({ country, incidentCount }) => {
         Object.keys(options).map((key) => {
             if (options[key].items)
                 filtered[key] = options[key].items.filter((x) => x.selected).map((item) => item.value);
+            return null;
         });
 
         return filtered;
@@ -60,7 +55,6 @@ const IncidentReport = ({ country, incidentCount }) => {
 
     const paginationHandler = (requestedPage) => {
         setGlobalOptions({ ...globalOptions, pagination: { ...globalOptions.pagination, current: requestedPage } })
-        console.log(requestedPage);
     }
 
     const fetchIncidentSummary = (options) => {
@@ -69,39 +63,23 @@ const IncidentReport = ({ country, incidentCount }) => {
 
         let query = optionKeys.map((key) => (`${key}=${options[key]}`)).join("&");
 
-        //console.log(`http://localhost:8000/incidents/${country}?${query}`);
-
-        axios({
-            url: `http://localhost:8000/incidents/summary/${country}?${query}`,
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${cookies.access_token}`
-            }
-        }).then((res) => {
-            console.log(res.data)
-            setIncidents({ country, incidents: res.data, show: true })
-        });
+        requestMaker(requestProvider().getIncidentSummary(country, query), cookies.access_token).make()
+            .then(res => setIncidents({ country, incidents: res.data, show: true }))
     }
 
     const fetchIncidents = (filterValue) => {
         let filterType = getFilteredOptions(globalOptions)["group"][0];
+        let query = `filter_type=${filterType}&filter_value=${filterValue}`
 
-        axios({
-            url: `http://localhost:8000/incidents/${country}?filter_type=${filterType}&filter_value=${filterValue}`,
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${cookies.access_token}`
-            }
-        }).then((res) => {
-            console.log(res.data)
+        requestMaker(requestProvider().getIncidents(country, query), cookies.access_token).make()
+            .then(res => {
+                let newIncidents = incidents.incidents;
+                let index = newIncidents.findIndex((x) => x["_id"]["raw"] === filterValue)
 
-            let newIncidents = incidents.incidents;
-            let index = newIncidents.findIndex((x) => x["_id"]["raw"] === filterValue)
+                newIncidents[index].items = res.data
 
-            newIncidents[index].items = res.data
-
-            setIncidents({ ...incidents, incidents: newIncidents })
-        });
+                setIncidents({ ...incidents, incidents: newIncidents })
+            })
     }
 
 

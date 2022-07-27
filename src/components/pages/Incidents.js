@@ -5,6 +5,8 @@ import ReactTooltip from "react-tooltip";
 import MapChart from "../views/MapChart";
 import IncidentReport from "../views/IncidentReport";
 import axios from "axios";
+import requestMaker from "../util/RequestMaker";
+import requestProvider from "../util/API";
 
 const Incidents = (props) => {
     const [tooltip, setTooltip] = useState("");
@@ -16,36 +18,18 @@ const Incidents = (props) => {
     });
     const [mapData, setMapData] = useState([]);
 
-
-
     useEffect(() => {
         console.log("useEffect called")
-        axios({
-            url: "http://localhost:8000/incidents/summary/all",
-            headers: {
-                Authorization: `Bearer ${cookies.access_token}`
-            },
-            method: "GET"
-        }).then((res) => setMapData(res.data));
+        getMapData();
     }, [])
 
-
+    const getMapData = () => {
+        requestMaker(requestProvider().getIncidentSummary("all"), cookies.access_token).make()
+            .then(res => setMapData(res.data));
+    }
 
     const onClickHandler = (country, incidentCount) => {
         setIncidents({ ...incidents, country, incidentCount, show: true });
-    }
-
-    /*
-
-        {
-            group: "day",
-            sort: "asc"
-        }
-
-    */
-
-    const optionsChange = (options) => {
-        setIncidents({ ...incidents, options })
     }
 
     return (

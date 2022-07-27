@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import CustomQueryBuilder from "../views/CustomQueryBuilder";
-import data from "../util/init-products.json";
 import ProductList from "../views/ProductList";
-import axios from "axios";
 import { useCookies } from "react-cookie";
 import ReportModal from "../views/ReportPopover";
+import requestMaker from "../util/RequestMaker";
+import requestProvider from "../util/API";
 
 const Search = () => {
 
@@ -14,25 +14,11 @@ const Search = () => {
         show: false,
         product: "",
     });
-    const [sample, setSample] = useState({});
     const [results, setResults] = useState([]);
 
     const handleSearch = (query) => {
-        console.log(query);
-
-        axios({
-            url: "http://localhost:8000/search",
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${cookies.access_token}`
-            },
-            data: { query }
-        }).then(res => {
-            console.log(res);
-            setResults(res.data);
-        });
-
-        //axios.get("http://localhost:8000/test/42", { headers: { "Authorization": `Bearer ${cookies.access_token}` } }).then((res) => console.log(res));
+        requestMaker(requestProvider().searchProducts({ query }), cookies["access_token"]).make()
+            .then(res => setResults(res.data));
     }
 
     const showReport = (product) => {

@@ -1,17 +1,13 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import { Button, Row, Col } from 'react-bootstrap';
-import axios from "axios";
-import API from "../util/API";
-import qs from "qs";
 import { useCookies } from "react-cookie";
-import { computeHeadingLevel } from "@testing-library/react";
-import { getNames, getName, getCode } from "country-list";
+import { getNames, getCode } from "country-list";
+import requestMaker from "../util/RequestMaker";
+import requestProvider from "../util/API";
 
 const RegisterForm = (props) => {
-    let navigate = useNavigate();
-    const [cookies, setCookie] = useCookies(["access_token, access_level"]);
+    const [cookies] = useCookies(["access_token, access_level"]);
 
     const [userData, setUserData] = useState({
         company: "",
@@ -38,9 +34,8 @@ const RegisterForm = (props) => {
             setUserData({ ...userData, password_confirmed: checkPassword(value) });
         } else if (name === "company") {
             setUserData({ ...userData, company: value, username: generateUsername(value) });
-        } else if (name.split("_").length == 2) {
+        } else if (name.split("_").length === 2) {
             let split = name.split("_");
-            let split_pre = split[0];
             let split_post = split[1];
 
             setUserData({ ...userData, address: { ...userData.address, [split_post]: value } });
@@ -50,10 +45,9 @@ const RegisterForm = (props) => {
     }
 
     const generateUsername = (company = "") => company.toLowerCase().replaceAll(" ", "_");
-    const generateAddress = (street, number, zip, city) => street + " "
 
     const checkPassword = (password) => {
-        return password == userData.password;
+        return password === userData.password;
     }
 
     const signUp = () => {
@@ -63,22 +57,16 @@ const RegisterForm = (props) => {
 
         if (!userData.password_confirmed) return;
 
-        axios({
-            url: "/signup",
-            baseURL: API.baseUrl,
-            headers: {
-                Authorization: `Bearer ${cookies.access_token}`
-            },
-            method: "POST",
-            data: {
-                username: userData.username,
-                password: userData.password,
-                company: userData.company,
-                address: { ...userData.address, zip_code: userData.zip },
-                country: userData.country,
-                type: userData.type
-            }
-        }).then((res) => console.log(res));
+        let body = {
+            username: userData.username,
+            password: userData.password,
+            company: userData.company,
+            address: { ...userData.address, zip_code: userData.address.zip },
+            country: userData.country,
+            type: userData.type
+        }
+
+        requestMaker(requestProvider().createUser(body), cookies.access_token).make();
     }
 
     return (

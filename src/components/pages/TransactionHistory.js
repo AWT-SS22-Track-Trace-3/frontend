@@ -12,6 +12,8 @@ import OwnershipElement from "../views/TransactionHistory/OwnershipElement";
 import ShipmentElement from "../views/TransactionHistory/ShipmentElement";
 import IncidentElement from "../views/TransactionHistory/IncidentElement";
 import TerminationElement from "../views/TransactionHistory/TerminationElement";
+import requestMaker from "../util/RequestMaker";
+import requestProvider from "../util/API";
 
 const TransactionHistory = (props) => {
     const { id } = useParams();
@@ -45,19 +47,13 @@ const TransactionHistory = (props) => {
     }
 
     const sampleData = () => {
-        axios({
-            url: `http://localhost:8000/product/${id}`,
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${cookies.access_token}`
-            }
-        }).then((res) => {
-            console.log(res.data);
-            if (Array.isArray(res.data))
-                resetSample();
-            else
-                setSample(res.data)
-        });
+        requestMaker(requestProvider().getProduct(id), cookies.access_token).make()
+            .then(res => {
+                if (Array.isArray(res.data))
+                    resetSample();
+                else
+                    setSample(res.data)
+            })
     }
 
     useEffect(() => {

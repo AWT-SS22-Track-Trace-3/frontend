@@ -1,28 +1,12 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo } from "react";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { geoCylindricalStereographic } from 'd3-geo-projection';
 import { scaleLinear } from "d3-scale";
-import { useCookies } from "react-cookie";
 import geo from '../util/map.json';
-import axios from "axios";
-import API from "../util/API";
 
 const MapChart = ({ setTooltipContent, onClickHandler, data }) => {
     const colorScale = scaleLinear()
         .range(["#ffedea", "#ff5233"]);
-
-    /*
-useEffect(() => {
-    console.log("useEffect called")
-    axios({
-        url: "http://localhost:8000/incidents/summary/all",
-        headers: {
-            Authorization: `Bearer ${cookies.access_token}`
-        },
-        method: "GET"
-    }).then((res) => setData(res.data));
-}, [])
-*/
 
     return (
         <React.Fragment>
