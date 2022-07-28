@@ -1,19 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, Col, Row } from "react-bootstrap";
 import CustomQueryBuilder from "../views/CustomQueryBuilder";
-import data from "../util/init-products.json";
 import ProductList from "../views/ProductList";
-import axios from "axios";
-import { useCookies } from "react-cookie";
+import ReportModal from "../views/ReportPopover";
+import requestMaker from "../util/RequestMaker";
+import requestProvider from "../util/API";
 
 const Search = () => {
-
-    const [cookies] = useCookies(["access_token"]);
+    const [report, setReport] = useState({
+        show: false,
+        product: "",
+    });
+    const [results, setResults] = useState([]);
 
     const handleSearch = (query) => {
-        console.log(query);
+        requestMaker(requestProvider().searchProducts({ query: JSON.parse(query) })).make()
+            .then(res => setResults(res.data));
+    }
 
-        axios.get("http://localhost:8000/test/42", { headers: { "Authorization": `Bearer ${cookies.access_token}` } }).then((res) => console.log(res));
+    const showReport = (product) => {
+        setReport({
+            show: true,
+            product
+        });
+    }
+
+    const hideReport = () => {
+        setReport({
+            ...report,
+            show: false
+        });
     }
 
     return (
@@ -24,12 +40,21 @@ const Search = () => {
                     <CustomQueryBuilder searchHandler={handleSearch}></CustomQueryBuilder>
                 </Col>
             </Row>
-            <Row className="mt-4">
-                <Col>
-                    <h2>Results</h2>
-                    <ProductList products={data.filter(x => x.name.includes("Metformin"))}></ProductList>
-                </Col>
-            </Row>
+            {
+                results.length > 0 ? (
+                    <Row className="mt-4">
+                        <Col>
+                            <h2>Results</h2>
+
+                            <ProductList
+                                products={results}
+                                reportHandler={showReport}
+                            ></ProductList>
+                        </Col>
+                    </Row>
+                ) : (<></>)
+            }
+            <ReportModal show={report.show} onHide={() => hideReport()} product={report.product}></ReportModal>
         </Container>
     )
 }

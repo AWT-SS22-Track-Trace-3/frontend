@@ -1,3 +1,7 @@
+.vertical-timeline {
+    padding: 0;
+}
+
 .vertical-timeline::before {
     left: 28px !important;
     background-color: #ddd !important;
@@ -22,7 +26,8 @@
     border: solid 1px rgba(0, 0, 0, 0.125);
 }
 
-.vertical-timeline-element-content .address>p {
+.vertical-timeline-element-content .address>p,
+.vertical-timeline-element-content .card-info>p {
     font-weight: 400 !important;
 }
 
@@ -32,4 +37,13 @@
 
 .vertical-timeline-element-date .badge {
     vertical-align: text-bottom;
+}
+
+.vertical-timeline-element-date {
+    padding-bottom: 0 !important;
+}
+
+.vertical-timeline-element-content .user-type {
+    color: "#212529";
+    font-size: 14px;
 }

@@ -6,7 +6,7 @@ import eu from "../../img/european-union.png";
 
 const ProductListItem = (props) => {
     function getLocaleImg(item) {
-        if (item.marketed_states.toLowerCase() === "eu") {
+        if (item.marketed_region.toLowerCase() === "eu") {
             return eu;
         } else {
             return us;
@@ -14,7 +14,7 @@ const ProductListItem = (props) => {
     }
 
     function getLocale(item) {
-        if (item.marketed_states.toLowerCase() === "eu") {
+        if (item.marketed_region.toLowerCase() === "eu") {
             return "eu";
         } else {
             return "us";
@@ -28,16 +28,24 @@ const ProductListItem = (props) => {
                     <Image src={getLocaleImg(props.item)} height="25px" className="me-2" style={{ verticalAlign: "sub" }}></Image>
                     {props.item.name}
                     <div style={{ float: "right" }}>
+                        {
+                            props.item.reported ? (
+                                <Badge bg="danger">Incident</Badge>
+                            ) : (<></>)}
+                        {
+                            props.item.used ? (
+                                <Badge bg="success">Terminated</Badge>
+                            ) : (<></>)}
                         <Link to={"/history/" + props.item.serial_number} className={(props.hideLink ? "d-none" : "")}>
                             <Button size="sm" variant="link">Transaction History</Button>
                         </Link>
-                        <Link to="/">
-                            <Button size="sm" variant="link">Report</Button>
-                        </Link>
+                        {props.noReport || props.item.reported ? (<></>) : (
+                            <Button size="sm" variant="link" onClick={() => props.reportHandler(props.item.serial_number)}>Report</Button>
+                        )}
                     </div>
                 </Card.Title>
                 <Accordion>
-                    <Accordion.Item eventKey={props.item.drug_code}>
+                    <Accordion.Item eventKey={props.item.serial_number}>
                         <Accordion.Header>
                             <span className="me-4">
                                 <Badge bg="warning" text="dark" className="me-2">
@@ -57,8 +65,12 @@ const ProductListItem = (props) => {
                                 <p>{getLocale(props.item) === "eu" ? "Drug Code" : "National Drug Code"}: <span style={{ fontWeight: 500 }}>{props.item.drug_code}</span></p>
                                 <p>{getLocale(props.item) === "eu" ? "Serial Number" : "Standard Numeric Identifier"}: <span style={{ fontWeight: 500 }}>{props.item.serial_number}</span></p>
                                 <p>Batch Number: <span style={{ fontWeight: 500 }}>{props.item.batch_number}</span></p>
-                                <p>Manufacturer: <span style={{ fontWeight: 500 }}>{props.item.manufacturer_name}</span></p>
-                                <p>Marketer: <span style={{ fontWeight: 500 }}>{props.item.marketing_holder_name}</span></p>
+                                <p>Manufacturers: {props.item.manufacturers.map((manufacturer, index) => (
+                                    <span key={index} style={{ fontWeight: 500 }}>{((index > 0 ? ", " : "") + manufacturer.company)}</span>
+                                ))}</p>
+                                <p>Sellers: {props.item.sellers.map((seller, index) => (
+                                    <span key={index} style={{ fontWeight: 500 }}>{((index > 0 ? ", " : "") + seller.company)}</span>
+                                ))}</p>
                             </div>
                             <div className="ms-5">
                                 <p>Form: <span style={{ fontWeight: 500 }}>{props.item.form}</span></p>

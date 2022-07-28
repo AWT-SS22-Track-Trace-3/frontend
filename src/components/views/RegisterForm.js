@@ -1,26 +1,25 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import { Button, Row, Col } from 'react-bootstrap';
-import axios from "axios";
-import API from "../util/API";
-import qs from "qs";
-import { useCookies } from "react-cookie";
+import { getNames, getCode } from "country-list";
+import requestMaker from "../util/RequestMaker";
+import requestProvider from "../util/API";
 
 const RegisterForm = (props) => {
-    let navigate = useNavigate();
-    const [cookies, setCookie] = useCookies(["access_token, access_level"]);
-
     const [userData, setUserData] = useState({
         company: "",
         username: "",
         password: "",
         password_confirmed: false,
-        address_street: "",
-        address_number: "",
-        address_zip: "",
-        address_city: "",
-        access_lvl: 0
+        address: {
+            street: "",
+            number: "",
+            zip: "",
+            city: "",
+            country: "DE",
+        },
+        country: "DE",
+        type: ""
     })
 
     const userDataChange = (event) => {
@@ -28,38 +27,43 @@ const RegisterForm = (props) => {
         const name = target.name;
         let value = target.value;
 
-        if (name == "password-confirm") {
+        if (name === "password-confirm") {
             setUserData({ ...userData, password_confirmed: checkPassword(value) });
+        } else if (name === "company") {
+            setUserData({ ...userData, company: value, username: generateUsername(value) });
+        } else if (name.split("_").length === 2) {
+            let split = name.split("_");
+            let split_post = split[1];
+
+            setUserData({ ...userData, address: { ...userData.address, [split_post]: value } });
         } else {
             setUserData({ ...userData, [name]: value });
         }
     }
 
+    const generateUsername = (company = "") => company.toLowerCase().replaceAll(" ", "_");
+
     const checkPassword = (password) => {
-        return password == userData.password;
+        return password === userData.password;
     }
 
     const signUp = () => {
         for (let key in userData) {
-            if (userData[key] === "") {
-                return;
-            }
+            if (userData[key] === "") return;
         }
 
-        axios({
-            url: "/signup",
-            baseURL: API.baseUrl,
-            headers: {
-                Authorization: `Bearer ${cookies.access_token}`
-            },
-            data: qs.stringify({
-                username: "",
-                password: "",
-                company: "",
-                address: "",
-                access_lvl: 0
-            })
-        }).then((res) => console.log(res));
+        if (!userData.password_confirmed) return;
+
+        let body = {
+            username: userData.username,
+            password: userData.password,
+            company: userData.company,
+            address: { ...userData.address, zip_code: userData.address.zip },
+            country: userData.country,
+            type: userData.type
+        }
+
+        requestMaker(requestProvider().createUser(body)).make();
     }
 
     return (
@@ -68,39 +72,48 @@ const RegisterForm = (props) => {
             <Form className="text-start">
                 <Form.Group className="mb-3">
                     <Form.Label>Username</Form.Label>
-                    <Form.Control name="username" type="text" placeholder="Username" onChange={userDataChange} />
+                    <Form.Control name="username" type="text" placeholder="Username" disabled value={userData.username} />
                 </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label>Company Name</Form.Label>
                     <Form.Control name="company" type="text" placeholder="Company Name" onChange={userDataChange} />
                 </Form.Group>
-                <Row className="mb-3">
-                    <Form.Group as={Col} xs="9">
+                <Row>
+                    <Form.Group as={Col} xs={8}>
                         <Form.Label>Street</Form.Label>
-                        <Form.Control name="address_street" type="text" placeholder="Street" onChange={userDataChange}></Form.Control>
+                        <Form.Control name="address_street" type="text" placeholder="Address" onChange={userDataChange}></Form.Control>
                     </Form.Group>
-                    <Form.Group as={Col} xs="3">
+                    <Form.Group as={Col} xs={4}>
                         <Form.Label>Number</Form.Label>
-                        <Form.Control name="address_number" type="text" placeholder="No." onChange={userDataChange}></Form.Control>
+                        <Form.Control name="address_number" type="text" placeholder="Number" onChange={userDataChange}></Form.Control>
                     </Form.Group>
                 </Row>
-                <Row className="mb-3">
-                    <Form.Group as={Col} xs="6">
+                <Row>
+                    <Form.Group as={Col}>
                         <Form.Label>Zip Code</Form.Label>
                         <Form.Control name="address_zip" type="text" placeholder="Zip Code" onChange={userDataChange}></Form.Control>
                     </Form.Group>
-                    <Form.Group as={Col} xs="6">
+                    <Form.Group as={Col}>
                         <Form.Label>City</Form.Label>
                         <Form.Control name="address_city" type="text" placeholder="City" onChange={userDataChange}></Form.Control>
                     </Form.Group>
                 </Row>
+                <Form.Group>
+                    <Form.Label>Country</Form.Label>
+                    <Form.Select name="address_country" value={userData.address.country} onChange={userDataChange}>
+                        {getNames().sort().map((item, index) =>
+                            <option value={getCode(item)} key={index}>{item}</option>
+                        )}
+                    </Form.Select>
+                </Form.Group>
                 <Form.Group className="mb-3">
                     <Form.Label>User Type</Form.Label>
                     <Form.Select name="type" value={userData.type} onChange={userDataChange}>
-                        <option value="2">Manufacturer</option>
-                        <option value="0">Wholesaler/Repackager</option>
-                        <option value="1">Dispenser</option>
-                        <option value="3">Authority</option>
+                        <option value="manufacturer">Manufacturer</option>
+                        <option value="wholesaler">Wholesaler</option>
+                        <option value="repackager">Repackager</option>
+                        <option value="dispenser">Dispenser</option>
+                        <option value="authority">Authority</option>
                     </Form.Select>
                 </Form.Group>
                 <div className="divider-horizontal my-4"></div>

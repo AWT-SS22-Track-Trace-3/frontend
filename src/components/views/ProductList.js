@@ -5,7 +5,7 @@ const ProductList = (props) => {
     return (
         <div>
             {props.products.map((item, index) =>
-                <ProductListItem item={item} key={index}></ProductListItem>
+                <ProductListItem item={item} key={index} reportHandler={props.reportHandler}></ProductListItem>
             )}
         </div>
     );

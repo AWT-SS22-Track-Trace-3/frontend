@@ -1,17 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Row, Col, Card, Badge, Accordion } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
 import '../styles/timeline.css';
-import TimelineIcon from "../views/TimelineIcon";
-import transactions from "../util/exampleTransactions.json";
-import data from "../util/init-products.json";
-import TimelineDates from "../views/TimelineDates";
 import ProductListItem from "../views/ProductListItem";
+import OwnershipElement from "../views/TransactionHistory/OwnershipElement";
+import ShipmentElement from "../views/TransactionHistory/ShipmentElement";
+import IncidentElement from "../views/TransactionHistory/IncidentElement";
+import TerminationElement from "../views/TransactionHistory/TerminationElement";
+import requestMaker from "../util/RequestMaker";
+import requestProvider from "../util/API";
 
 const TransactionHistory = (props) => {
     const { id } = useParams();
+
+    const defaultSample = {
+        "name": "",
+        "common_name": "",
+        "form": "",
+        "strength": "",
+        "drug_code": "",
+        "pack_size": 0,
+        "pack_type": "",
+        "serial_number": "",
+        "reimbursement_number": "",
+        "batch_number": "",
+        "expiry_date": "",
+        "coding": "",
+        "marketed_region": "",
+        "manufacturers": [],
+        "sellers": [],
+        "supply_chain": []
+    }
+    const resetSample = () => setSample(defaultSample)
+    const [sample, setSample] = useState(defaultSample);
 
     const containerStyle = {
         display: "flex",
@@ -19,35 +42,53 @@ const TransactionHistory = (props) => {
         justifyContent: "center"
     }
 
+    const sampleData = () => {
+        requestMaker(requestProvider().getProduct(id)).make()
+            .then(res => {
+                if (Array.isArray(res.data))
+                    resetSample();
+                else
+                    setSample(res.data)
+            })
+    }
+
+    useEffect(() => {
+        console.log("fetching")
+        sampleData();
+    }, [])
+
     return (
         <Container fluid="lg" style={containerStyle}>
             <h1>Supply Chain Overview</h1>
-            <Row>
-                <Col>
-                    <ProductListItem item={data[0]} hideLink noMargin></ProductListItem>
-                </Col>
-                <Col sm={{ span: 12 }} className="d-flex flex-column">
-                    <VerticalTimeline animate={false} layout={"1-column-left"} lineColor={"black"}>
-                        {transactions.map((item, index) =>
-                            <VerticalTimelineElement
-                                icon={<TimelineIcon type={item.type} />}
-                                date={<TimelineDates checkin={item.checkin_date} checkout={item.checkout_date} />}
-                                key={index}
-                            >
-                                <div className="text-start">
-                                    <h4>
-                                        {item.name}
-                                    </h4>
-                                    <div className="address mb-3">
-                                        <p className="mb-0 mt-1">{item.address_number} {item.address_street}</p>
-                                        <p className="mt-0">{item.address_zip} {item.address_city}</p>
-                                    </div>
-                                </div>
-                            </VerticalTimelineElement>
-                        )}
-                    </VerticalTimeline>
-                </Col>
-            </Row>
+            {sample.serial_number == "" ? (<div>No such product</div>) : (
+                <Row>
+                    <Col>
+                        <ProductListItem item={sample} hideLink noMargin></ProductListItem>
+                    </Col>
+                    <Col sm={{ span: 12 }} className="d-flex flex-column">
+                        <VerticalTimeline animate={false} layout={"1-column-left"} lineColor={"black"}>
+                            {sample.supply_chain.map((item, index) => {
+                                if (item.type === "change_of_ownership")
+                                    return (
+                                        <OwnershipElement key={index} item={item}></OwnershipElement>
+                                    )
+                                if (item.type === "shipment")
+                                    return (
+                                        <ShipmentElement key={index} item={item}></ShipmentElement>
+                                    )
+                                if (item.type === "incident")
+                                    return (
+                                        <IncidentElement key={index} item={item}></IncidentElement>
+                                    )
+                                if (item.type === "termination")
+                                    return (
+                                        <TerminationElement key={index} item={item}></TerminationElement>
+                                    )
+                            })}
+                        </VerticalTimeline>
+                    </Col>
+                </Row>
+            )}
         </Container >
     );
 }

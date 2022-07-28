@@ -2,14 +2,12 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import { Button } from 'react-bootstrap';
-import axios from "axios";
-import { useCookies } from "react-cookie";
 import qs from 'qs';
+import requestMaker from "../util/RequestMaker";
+import requestProvider from "../util/API";
 
 const LoginForm = (props) => {
     let navigate = useNavigate();
-
-    const [cookies, setCookie] = useCookies();
 
     const [loginData, setLoginData] = useState({
         loginId: "",
@@ -25,14 +23,11 @@ const LoginForm = (props) => {
     }
 
     const signIn = () => {
-        axios.post("http://localhost:8000/token", qs.stringify({
+        requestMaker(requestProvider().getToken(qs.stringify({
             username: loginData.loginId,
             password: loginData.password
-        })).then((res) => {
-            setCookie("access_level", res.data.access_lvl, { path: '/' });
-            setCookie("access_token", res.data.access_token, { path: '/' });
-            navigate("/search");
-        }).then((err) => console.log(err));
+        }))).make()
+            .then(() => navigate("/search"));
     }
 
     return (
