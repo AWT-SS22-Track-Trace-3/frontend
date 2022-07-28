@@ -7,7 +7,7 @@ import 'bootstrap/scss/bootstrap.scss';
 import 'react-querybuilder/dist/query-builder.scss';
 
 const CustomQueryBuilder = (props) => {
-    const fields: Field[] = [
+    const fields = [
         {
             name: 'name',
             label: 'Product Name',
@@ -66,8 +66,7 @@ const CustomQueryBuilder = (props) => {
                 controlElements={{ ...bootstrapControlElements, valueEditor: CustomValueEditor }}
                 controlClassnames={bootstrapControlClassnames}
             ></QueryBuilder>
-            <Button onClick={() => props.searchHandler(formatQuery(query, "mongodb"))}>Search</Button>
-            {/*<p>{formatQuery(query, "mongodb")}</p>*/}
+            <Button className="mt-2 float-end" onClick={() => props.searchHandler(formatQuery(query, "mongodb"))}>Search</Button>
         </div>
     );
 }

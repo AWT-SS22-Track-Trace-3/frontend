@@ -90,7 +90,10 @@ const IncidentReport = ({ country, incidentCount }) => {
             paginationConfig={globalOptions.pagination}
         >
             {incidents.incidents.length > 0 ? (
-                <IncidentAccordion items={incidents.incidents} openHandler={fetchIncidents}></IncidentAccordion>
+                <IncidentAccordion
+                    items={incidents.incidents}
+                    openHandler={fetchIncidents}
+                ></IncidentAccordion>
             ) : (
                 "No known incidents."
             )}

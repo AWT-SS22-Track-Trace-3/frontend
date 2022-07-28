@@ -3,7 +3,7 @@ import { Badge, Accordion } from "react-bootstrap";
 import GroupedListView from "./GroupedListView";
 import IncidentReportItem from "./IncidentReportItem";
 
-const IncidentAccordion = ({ summaryOnly, items, openHandler }) => {
+const IncidentAccordion = ({ groupKeyRaw, groupKeyDisplay, items, openHandler }) => {
     return (
         <Accordion flush alwaysOpen>
             {items.map((item, index) => (
@@ -13,7 +13,9 @@ const IncidentAccordion = ({ summaryOnly, items, openHandler }) => {
                             {item["_id"]["formatted"]}
                             <span>
                                 <Badge bg="danger" className="me-2 ms-4">Reports: {item.count}</Badge>
-                                <Badge bg="dark">Companies involved: {24}</Badge>
+                                {item.unique_companies > 0 ? (
+                                    <Badge bg="dark">Companies involved: {(item.unique_companies | 0)}</Badge>
+                                ) : (<></>)}
                             </span>
                         </div>
                     </Accordion.Header>
@@ -22,7 +24,7 @@ const IncidentAccordion = ({ summaryOnly, items, openHandler }) => {
                             item.items.map((x, index) =>
                                 <IncidentReportItem key={index} incident={x}></IncidentReportItem>
                             )
-                        ) : ("Test")}
+                        ) : (<></>)}
                     </Accordion.Body>
                 </Accordion.Item>
             ))}

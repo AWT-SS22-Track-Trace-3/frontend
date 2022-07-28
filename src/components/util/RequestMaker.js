@@ -1,5 +1,4 @@
 import axios from "axios";
-import requestProvider from "./API";
 import qs from "qs";
 import Cookies from "js-cookie";
 

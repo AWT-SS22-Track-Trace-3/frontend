@@ -40,19 +40,20 @@ const Search = () => {
                     <CustomQueryBuilder searchHandler={handleSearch}></CustomQueryBuilder>
                 </Col>
             </Row>
-            <Row className="mt-4">
-                <Col>
-                    <h2>Results</h2>
-                    {
-                        results.length > 0 ? (
+            {
+                results.length > 0 ? (
+                    <Row className="mt-4">
+                        <Col>
+                            <h2>Results</h2>
+
                             <ProductList
                                 products={results}
                                 reportHandler={showReport}
                             ></ProductList>
-                        ) : (<></>)
-                    }
-                </Col>
-            </Row>
+                        </Col>
+                    </Row>
+                ) : (<></>)
+            }
             <ReportModal show={report.show} onHide={() => hideReport()} product={report.product}></ReportModal>
         </Container>
     )

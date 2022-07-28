@@ -3,12 +3,12 @@ export const globalGroups = {
     items: [
         {
             'title': "Company",
-            "value": "company",
+            "value": "company_name",
             "sortType": "alphabet"
         },
         {
             'title': "Incident Type",
-            "value": "type",
+            "value": "incident_type",
             "sortType": "alphabet"
         },
         {
