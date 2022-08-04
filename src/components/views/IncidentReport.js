@@ -6,22 +6,25 @@ import requestMaker from "../util/RequestMaker";
 import requestProvider from "../util/API";
 
 const IncidentReport = ({ country, incidentCount }) => {
-    const [globalOptions, setGlobalOptions] = useState({
+    const defaultPagination = {
         pagination: {
             current: 0,
-            interval: 5,
-            total: 0
+            interval: 10
         }
-    });
+    }
+    const [globalOptions, setGlobalOptions] = useState(defaultPagination);
     const [incidents, setIncidents] = useState({
         country: "",
         incidents: [],
-        show: false
+        show: false,
+        total: 0
     });
 
+    const resetPagination = () => setGlobalOptions({ ...globalOptions, ...defaultPagination })
+
     useEffect(() => {
-        const defaultOptions = getGlobalDefaultState();
-        setGlobalOptions({ ...globalOptions, ...defaultOptions })
+        const defaultOptions = { ...globalOptions, ...getGlobalDefaultState() };
+        setGlobalOptions(defaultOptions)
 
         if (country && incidentCount > 0) {
             fetchIncidentSummary(getFilteredOptions(defaultOptions));
@@ -34,10 +37,21 @@ const IncidentReport = ({ country, incidentCount }) => {
             selected: (item.value === value || false)
         }));
 
-        const updatedOptions = { ...globalOptions, [key]: { ...globalOptions[key], items: newItems } };
+        const updatedOptions = { ...globalOptions, ...defaultPagination, [key]: { ...globalOptions[key], items: newItems } };
 
         setGlobalOptions(updatedOptions);
         fetchIncidentSummary(getFilteredOptions(updatedOptions));
+    }
+
+    const parsePagination = (options) => {
+        let pagination = {}
+
+        if (options.pagination) {
+            pagination["limit"] = options.pagination.interval;
+            pagination["offset"] = options.pagination.interval * options.pagination.current;
+        }
+
+        return pagination
     }
 
     const getFilteredOptions = (options) => {
@@ -48,11 +62,15 @@ const IncidentReport = ({ country, incidentCount }) => {
             return null;
         });
 
-        return filtered;
+        return { ...filtered, ...parsePagination(options) };
     }
 
     const paginationHandler = (requestedPage) => {
-        setGlobalOptions({ ...globalOptions, pagination: { ...globalOptions.pagination, current: requestedPage } })
+        let updatedOptions = { ...globalOptions, pagination: { ...globalOptions.pagination, current: requestedPage } };
+
+        fetchIncidentSummary(getFilteredOptions(updatedOptions));
+
+        setGlobalOptions(updatedOptions);
     }
 
     const fetchIncidentSummary = (options) => {
@@ -62,7 +80,7 @@ const IncidentReport = ({ country, incidentCount }) => {
         let query = optionKeys.map((key) => (`${key}=${options[key]}`)).join("&");
 
         requestMaker(requestProvider().getIncidentSummary(country, query)).make()
-            .then(res => setIncidents({ country, incidents: res.data, show: true }))
+            .then(res => setIncidents({ country, incidents: res.data.data, show: true, total: res.data.total.count }))
     }
 
     const fetchIncidents = (filterValue) => {
@@ -74,7 +92,7 @@ const IncidentReport = ({ country, incidentCount }) => {
                 let newIncidents = incidents.incidents;
                 let index = newIncidents.findIndex((x) => x["_id"]["raw"] === filterValue)
 
-                newIncidents[index].items = res.data
+                newIncidents[index].items = res.data.data;
 
                 setIncidents({ ...incidents, incidents: newIncidents })
             })
@@ -84,21 +102,23 @@ const IncidentReport = ({ country, incidentCount }) => {
     return (
         <GroupedListView
             buttons={globalOptions}
-            title={"Incident Report " + country}
+            title={`Incident Report ${country} - Total reports: ${incidents.total}`}
             selectHandler={globalOptionsSelect}
             paginationHandler={paginationHandler}
-            paginationConfig={globalOptions.pagination}
+            paginationConfig={{ ...globalOptions.pagination, total: incidents.total }}
         >
-            {incidents.incidents.length > 0 ? (
-                <IncidentAccordion
-                    items={incidents.incidents}
-                    openHandler={fetchIncidents}
-                ></IncidentAccordion>
-            ) : (
-                "No known incidents."
-            )}
+            {
+                incidents.incidents.length > 0 ? (
+                    <IncidentAccordion
+                        items={incidents.incidents}
+                        openHandler={fetchIncidents}
+                    ></IncidentAccordion>
+                ) : (
+                    "No known incidents."
+                )
+            }
 
-        </GroupedListView>
+        </GroupedListView >
     );
 }
 

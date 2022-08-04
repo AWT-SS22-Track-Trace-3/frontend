@@ -34,8 +34,6 @@ export const formatTimestamp = (timestamp) => {
 export const getDateFromISOString = (timestamp) => {
     if (!timestamp) return "";
 
-    console.log(timestamp)
-
     let date = new Date(timestamp)
 
     return format(date, "dd.MM.yyyy")

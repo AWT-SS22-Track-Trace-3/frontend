@@ -2,7 +2,6 @@ import React from "react";
 import { VerticalTimelineElement } from "react-vertical-timeline-component";
 import TimelineIcon from "../TimelineIcon";
 import TimelineDates from "../TimelineDates";
-import { Badge } from "react-bootstrap";
 import { formatAddress, getDateFromISOString } from "../../util/CustomFormatter";
 import { UserTypes } from "../../util/typeMapper";
 

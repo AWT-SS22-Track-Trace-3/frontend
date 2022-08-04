@@ -1,8 +1,9 @@
 import React from "react";
-import { Accordion, Badge, Card, Button, Image } from "react-bootstrap";
+import { Accordion, Badge, Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import us from "../../img/united-states.png";
 import eu from "../../img/european-union.png";
+import { getDateFromISOString } from "../util/CustomFormatter";
 
 const ProductListItem = (props) => {
     function getLocaleImg(item) {
@@ -25,8 +26,7 @@ const ProductListItem = (props) => {
         <Card className={"text-start product " + (props.noMargin ? "" : "mb-2")}>
             <Card.Body>
                 <Card.Title>
-                    <Image src={getLocaleImg(props.item)} height="25px" className="me-2" style={{ verticalAlign: "sub" }}></Image>
-                    {props.item.name}
+                    {`(${props.item.marketed_region}) ${props.item.name}`}
                     <div style={{ float: "right" }}>
                         {
                             props.item.reported ? (
@@ -68,15 +68,12 @@ const ProductListItem = (props) => {
                                 <p>Manufacturers: {props.item.manufacturers.map((manufacturer, index) => (
                                     <span key={index} style={{ fontWeight: 500 }}>{((index > 0 ? ", " : "") + manufacturer.company)}</span>
                                 ))}</p>
-                                <p>Sellers: {props.item.sellers.map((seller, index) => (
-                                    <span key={index} style={{ fontWeight: 500 }}>{((index > 0 ? ", " : "") + seller.company)}</span>
-                                ))}</p>
                             </div>
                             <div className="ms-5">
                                 <p>Form: <span style={{ fontWeight: 500 }}>{props.item.form}</span></p>
                                 <p>Strength: <span style={{ fontWeight: 500 }}>{props.item.strength}</span></p>
                                 <p>Pack Size: <span style={{ fontWeight: 500 }}>{props.item.pack_size}</span></p>
-                                <p>Expiration Date: <span style={{ fontWeight: 500 }}>{props.item.expiry_date}</span></p>
+                                <p>Expiration Date: <span style={{ fontWeight: 500 }}>{getDateFromISOString(props.item.expiry_date)}</span></p>
                             </div>
                         </Accordion.Body>
                     </Accordion.Item>

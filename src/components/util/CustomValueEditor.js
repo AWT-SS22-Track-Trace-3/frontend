@@ -1,5 +1,5 @@
 // CustomValueEditor.tsx
-import { format, parse } from 'date-fns';
+import { format, parse, parseISO } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import { ValueEditor, ValueEditorProps } from 'react-querybuilder';
 import { BootstrapValueEditor } from '@react-querybuilder/bootstrap';
@@ -13,8 +13,8 @@ const CustomValueEditor = (props) => {
             <div>
                 <DatePicker
                     dateFormat={dateFormat}
-                    selected={!props.value ? null : parse(props.value, dateFormat, new Date())}
-                    onChange={(d: Date) => props.handleOnChange(d ? format(d, dateFormat) : null)}
+                    selected={!props.value ? null : (props.value, dateFormat, new Date())}
+                    onChange={(d) => props.handleOnChange(d ? d : null)}
                 />
             </div>
         );

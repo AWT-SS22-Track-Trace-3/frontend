@@ -7,42 +7,56 @@ import 'bootstrap/scss/bootstrap.scss';
 import 'react-querybuilder/dist/query-builder.scss';
 
 const CustomQueryBuilder = (props) => {
+    const textOperators = [
+        { name: '=', label: 'equals' },
+        { name: '!=', label: 'does not equal' },
+        { name: 'contains', label: 'contains' },
+        { name: 'beginsWith', label: 'begins with' },
+        { name: 'endsWith', label: 'ends with' },
+        { name: 'doesNotContain', label: 'does not contain' },
+        { name: 'doesNotBeginWith', label: 'does not begin with' },
+        { name: 'doesNotEndWith', label: 'does not end with' },
+        { name: 'null', label: 'is null' }
+    ]
+
     const fields = [
         {
             name: 'name',
             label: 'Product Name',
-            operator: "="
+            operators: textOperators
         },
         {
             name: 'serial_number',
             label: 'Serial Number',
-            operator: "="
+            operators: textOperators
         },
         {
             name: 'batch_number',
-            label: 'Lot Number',
-            operator: "="
+            label: 'Batch Number',
+            operators: textOperators
         },
         {
             name: 'code',
             label: 'PC/NDC',
-            operator: "="
+            operators: textOperators
         },
         {
-            name: 'sni',
-            label: 'SNI',
-            operator: "="
+            name: "marketed_region",
+            label: "Marketed Region",
+            operators: textOperators
         },
+        ,
         {
-            name: 'expiry',
-            label: 'Expiration Date',
-            datatype: "date",
-            operators: [
-                { name: "=", label: "on" },
-                { name: "<=", label: "before" },
-                { name: ">=", label: "after" }
-            ]
+            name: "used",
+            label: "Terminated",
+            valueEditorType: "switch"
         },
+        ,
+        {
+            name: "reported",
+            label: "Reported",
+            valueEditorType: "switch"
+        }
     ];
 
     const [query, setQuery] = useState({

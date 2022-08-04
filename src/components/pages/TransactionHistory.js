@@ -53,7 +53,6 @@ const TransactionHistory = (props) => {
     }
 
     useEffect(() => {
-        console.log("fetching")
         sampleData();
     }, [])
 

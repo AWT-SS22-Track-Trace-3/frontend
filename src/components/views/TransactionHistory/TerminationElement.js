@@ -1,9 +1,8 @@
 import React from "react";
-import { Container, Col, Row } from "react-bootstrap";
 import { VerticalTimelineElement } from "react-vertical-timeline-component";
 import TimelineDates from "../TimelineDates";
 import TimelineIcon from "../TimelineIcon";
-import { formatAddress, getDateFromISOString } from "../../util/CustomFormatter";
+import { formatAddress } from "../../util/CustomFormatter";
 
 const IncidentElement = ({ item }) => {
     return (

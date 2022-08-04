@@ -46,7 +46,6 @@ const requestProvider = () => {
     }
 
     const init = (endpoint, replacements = {}, query = undefined) => {
-        console.log(endpoint)
         return {
             url: getFormattedURL(replacements, endpoint.path) + (query ? `?${query}` : ""),
             method: endpoint.method,

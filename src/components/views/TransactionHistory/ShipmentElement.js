@@ -2,7 +2,6 @@ import React from "react";
 import { VerticalTimelineElement } from "react-vertical-timeline-component";
 import TimelineIcon from "../TimelineIcon";
 import TimelineDates from "../TimelineDates";
-import { Badge } from "react-bootstrap";
 import { ShipmentMethods, UserTypes } from "../../util/typeMapper";
 
 const ShipmentElement = ({ item }) => {

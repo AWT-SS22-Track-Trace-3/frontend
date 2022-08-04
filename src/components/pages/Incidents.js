@@ -16,13 +16,14 @@ const Incidents = (props) => {
     const [mapData, setMapData] = useState([]);
 
     useEffect(() => {
-        console.log("useEffect called")
         getMapData();
     }, [])
 
     const getMapData = () => {
         requestMaker(requestProvider().getIncidentSummary("all")).make()
-            .then(res => setMapData(res.data));
+            .then(res => {
+                setMapData(res.data.data);
+            });
     }
 
     const onClickHandler = (country, incidentCount) => {
