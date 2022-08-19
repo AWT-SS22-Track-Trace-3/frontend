@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import Form from 'react-bootstrap/Form';
-import { Button, Row, Col } from 'react-bootstrap';
+import { Button, Row, Col, Alert } from 'react-bootstrap';
 import { getNames, getCode } from "country-list";
 import requestMaker from "../util/RequestMaker";
 import requestProvider from "../util/API";
+import { umlautMap } from "../util/typeMapper";
 
 const RegisterForm = (props) => {
+    const [hint, setHint] = useState("");
     const [userData, setUserData] = useState({
         company: "",
         username: "",
@@ -19,7 +21,7 @@ const RegisterForm = (props) => {
             country: "DE",
         },
         country: "DE",
-        type: ""
+        type: "manufacturer"
     })
 
     const userDataChange = (event) => {
@@ -39,9 +41,13 @@ const RegisterForm = (props) => {
         } else {
             setUserData({ ...userData, [name]: value });
         }
+
+        if (hint) {
+            setHint("");
+        }
     }
 
-    const generateUsername = (company = "") => company.toLowerCase().replaceAll(" ", "_");
+    const generateUsername = (company = "") => company.toLowerCase().replace(/[\u00fc|\u00e4|\u00f6|\u00df]/g, (a) => umlautMap[a]).replace(/[^\w ]/g, "").replaceAll(" ", "_").replaceAll(/(_)\1+/g, "_");
 
     const checkPassword = (password) => {
         return password === userData.password;
@@ -63,7 +69,7 @@ const RegisterForm = (props) => {
             type: userData.type
         }
 
-        requestMaker(requestProvider().createUser(body)).make();
+        requestMaker(requestProvider().createUser(body)).make().then(() => setHint("User registered successfully"));
     }
 
     return (
@@ -127,9 +133,12 @@ const RegisterForm = (props) => {
                     <Form.Text>Passwords {(userData.password_confirmed ? "" : "do not")} match!</Form.Text>
                 </Form.Group>
             </Form>
-            <Button variant="primary" type="submit" onClick={signUp} style={{ float: "right" }}>
-                Register
-            </Button>
+            <div className="d-flex justify-content-end">
+                <Alert style={{ width: "100%" }} className={"mb-0 " + (hint ? "" : "d-none")}>{hint}</Alert>
+                <Button variant="primary" onClick={() => signUp()} className="ms-4">
+                    Register
+                </Button>
+            </div>
         </div>
     );
 }

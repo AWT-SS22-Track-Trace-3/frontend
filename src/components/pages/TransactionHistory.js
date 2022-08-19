@@ -11,6 +11,7 @@ import IncidentElement from "../views/TransactionHistory/IncidentElement";
 import TerminationElement from "../views/TransactionHistory/TerminationElement";
 import requestMaker from "../util/RequestMaker";
 import requestProvider from "../util/API";
+import ReportModal from "../views/ReportPopover";
 
 const TransactionHistory = (props) => {
     const { id } = useParams();
@@ -35,6 +36,10 @@ const TransactionHistory = (props) => {
     }
     const resetSample = () => setSample(defaultSample)
     const [sample, setSample] = useState(defaultSample);
+    const [report, setReport] = useState({
+        show: false,
+        product: "",
+    });
 
     const containerStyle = {
         display: "flex",
@@ -56,13 +61,27 @@ const TransactionHistory = (props) => {
         sampleData();
     }, [])
 
+    const showReport = (product) => {
+        setReport({
+            show: true,
+            product
+        });
+    }
+
+    const hideReport = () => {
+        setReport({
+            ...report,
+            show: false
+        });
+    }
+
     return (
         <Container fluid="lg" style={containerStyle}>
             <h1>Supply Chain Overview</h1>
             {sample.serial_number == "" ? (<div>No such product</div>) : (
                 <Row>
                     <Col>
-                        <ProductListItem item={sample} hideLink noMargin></ProductListItem>
+                        <ProductListItem item={sample} hideLink noMargin reportHandler={showReport}></ProductListItem>
                     </Col>
                     <Col sm={{ span: 12 }} className="d-flex flex-column">
                         <VerticalTimeline animate={false} layout={"1-column-left"} lineColor={"black"}>
@@ -88,6 +107,7 @@ const TransactionHistory = (props) => {
                     </Col>
                 </Row>
             )}
+            <ReportModal show={report.show} onHide={() => hideReport()} product={report.product}></ReportModal>
         </Container >
     );
 }
