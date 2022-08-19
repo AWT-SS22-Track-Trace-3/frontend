@@ -2,7 +2,6 @@ FROM node:18-alpine as builder
 ENV REACT_APP_BACKENDURL tracktrace_backend
 WORKDIR /app
 COPY package.json .
-COPY yarn.lock .
 RUN yarn
 COPY . .
 RUN yarn build
