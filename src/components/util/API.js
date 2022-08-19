@@ -33,7 +33,7 @@ const endpoints = {
     }
 }
 
-const backendHost = location.hostname || "localhost";
+const backendHost = window.location.hostname || "localhost";
 const baseUrl = `http://${backendHost}:8000`;
 
 const requestProvider = () => {
