@@ -33,7 +33,7 @@ const endpoints = {
     }
 }
 
-const backendHost = process.env.REACT_APP_BACKENDURL ? process.env.REACT_APP_BACKENDURL : "localhost";
+const backendHost = location.hostname || "localhost";
 const baseUrl = `http://${backendHost}:8000`;
 
 const requestProvider = () => {
